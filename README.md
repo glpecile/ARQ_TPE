@@ -1,2 +1,8 @@
-# 2020Q2_ARQ_TPE
- TPE Arquitectura de las Computadoras ITBA 2020 Q2.
+## Autores
+<hr>
+[Roberto José Catalán] (https://github.com/rcatalan98)
+
+[Desiree Melisa Limachi] (https://github.com/dlimachi)
+
+[Gian Lua Pecile] (https://github.com/glpecile)
+<hr>
