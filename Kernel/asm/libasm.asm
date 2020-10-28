@@ -1,5 +1,5 @@
 GLOBAL cpuVendor
-
+GLOBAL getRTC
 section .text
 	
 cpuVendor:
@@ -24,4 +24,10 @@ cpuVendor:
 
 	mov rsp, rbp
 	pop rbp
+	ret
+
+getRTC:
+	mov rax, rdi	; recibimos por parámetro.
+	out 70h, al		; 70h entrada para la informacion que quiero en 71h.
+	in al, 71h		; en al se deposita lo pedido por 70h, presente en 71h.
 	ret

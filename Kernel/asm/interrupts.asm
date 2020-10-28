@@ -8,7 +8,7 @@ GLOBAL _hlt
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
-GLOBAL _irq02Handler
+GLOBAL _irq02Handlecr
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler

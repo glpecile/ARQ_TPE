@@ -41,14 +41,17 @@ struct vbe_mode_info_structure
 	uint8_t reserved1[206];
 } __attribute__((packed));
 
-struct vbe_mode_info_structure *screenData = (void *)0x0000000000005C00;
+struct vbe_mode_info_structure *screenData = (void *)0x5C00;
 
 unsigned getPixelDataByPosition(int x, int y)
 {
 	return (x + y * screenData->width) * 3;
 }
 
-void draw_pixel(int x, int y, int color)
+/**
+ * Dibuja un pixel en la pantalla.
+ */
+void drawPixel(int x, int y, int color)
 {
 	char *curpos = ((char *)(uint64_t)screenData->framebuffer);
 	unsigned data = getPixelDataByPosition(x, y);
@@ -57,30 +60,33 @@ void draw_pixel(int x, int y, int color)
 	curpos[data + 2] = (color >> 16) & 255; // R
 }
 
-void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
+/**
+ *  Dibuja un caracter en la pantalla.
+ */
+	void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
 	int aux_x = x;
 	int aux_y = y;
 
-	char bitIsPresent; // ver de cambiar esto.
+	char bitIsPresent;
 
-	unsigned char *toDraw = charBitmap(character); // consigue la letra.
+	unsigned char *toDraw = charBitmap(character); // consigue la letra de la estructura en font.c
 
 	for (int i = 0; i < CHAR_HEIGHT; i++)
 	{
 		for (int j = 0; j < CHAR_WIDTH; j++)
 		{
-			bitIsPresent = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // ni idea que hace.
+			bitIsPresent = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // preguntar.
 
 			if (bitIsPresent)
 				drawSquare(aux_x, aux_y, fontSize, fontColor); // dibuja la letra.
 			else
 				drawSquare(aux_x, aux_y, fontSize, bgColor); // dibuja el fondo.
 
-			aux_x += fontSize;	// incrementa en x el tamaño.
+			aux_x += fontSize; // incrementa en x el tamaño.
 		}
 		aux_x = x;
-		aux_y += fontSize;
+		aux_y += fontSize; // incrementa en y el tamaño.
 	}
 }
 
@@ -90,7 +96,7 @@ void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
 	{
 		for (int j = 0; j < h; j++)
 		{
-			draw_pixel(x + i, y + j, color);
+			drawPixel(x + i, y + j, color);
 		}
 	}
 }

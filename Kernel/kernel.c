@@ -1,10 +1,15 @@
+/**
+ *  Limpiamos un poco lo previamente establecido.
+ */
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
-#include <naiveConsole.h>
-#include <videoDriver.h>
 #include <idtLoader.h>
+#include <naiveConsole.h>
+#include <rtcDriver.h>
+#include <keyboardDriver.h>
+#include <videoDriver.h>
 
 #define WHITE 0xFFFFFF
 #define BLACK 0x0
@@ -37,61 +42,40 @@ void *getStackBase()
 
 void *initializeKernelBinary()
 {
-	char buffer[10];
-
-	ncPrint("[x64BareBones]");
-	ncNewline();
-
-	ncPrint("CPU Vendor:");
-	ncPrint(cpuVendor(buffer));
-	ncNewline();
-
-	ncPrint("[Loading modules]");
-	ncNewline();
 	void *moduleAddresses[] = {
 		sampleCodeModuleAddress,
 		sampleDataModuleAddress};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
-	ncPrint("[Done]");
-	ncNewline();
-	ncNewline();
-
-	ncPrint("[Initializing kernel's binary]");
-	ncNewline();
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
-	ncPrint("  text: 0x");
-	ncPrintHex((uint64_t)&text);
-	ncNewline();
-	ncPrint("  rodata: 0x");
-	ncPrintHex((uint64_t)&rodata);
-	ncNewline();
-	ncPrint("  data: 0x");
-	ncPrintHex((uint64_t)&data);
-	ncNewline();
-	ncPrint("  bss: 0x");
-	ncPrintHex((uint64_t)&bss);
-	ncNewline();
-
-	ncPrint("[Done]");
-	ncNewline();
-	ncNewline();
 	return getStackBase();
 }
 
 int main()
 {
 	load_idt();
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncPrint((char *)sampleDataModuleAddress);
+	((EntryPoint)sampleCodeModuleAddress)();
+	/*
+	drawChar(10, 10, 'F', 1, WHITE, BLACK);
+	// day of the week
+	char *day_of_the_week[2];
+	uintToBase(getTime(DAY_OF_THE_WEEK), day_of_the_week, 10);
+	drawChar(10, 30, day_of_the_week[0], 1, WHITE, BLACK);
+	drawChar(10, 30, day_of_the_week[1], 1, WHITE, BLACK);
+	//hours
+	drawChar(14, 60, getTime(HOURS), 1, WHITE, BLACK);
+	// minutes
+	drawChar(16, 90, getTime(MINUTES), 1, WHITE, BLACK);
+	// seconds
+	drawChar(18, 120, getTime(SECONDS), 1, WHITE, BLACK);
+	*/
+	// test de driver de teclado.
 
-	drawChar(10, 10, 'f', 1, WHITE, BLACK);
+	keyboard_handler();
 
-	while(1);
-
+	while (1)
+		;
 	return 0;
 }

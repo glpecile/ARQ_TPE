@@ -97,7 +97,7 @@ static unsigned char __font_bitmap__[] = {
 	___XX___,
 	________,
 	________,
-	//  37 $25 'percent'
+	//  F37 $25 'percent'
 	//	width 8, bbx 0, bby -4, bbw 8, bbh 16
 	________,
 	________,

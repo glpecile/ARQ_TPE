@@ -1,3 +1,6 @@
+/**
+ * Archivo provisto por la catedra. Modifiaciones para aplicar interrupciones.
+*/
 #include <stdint.h>
 #include <idtLoader.h>
 #include <defs.h>
@@ -23,6 +26,7 @@ static void setup_IDT_entry(int index, uint64_t offset);
 
 void load_idt()
 {
+  _cli();
 
   setup_IDT_entry(0x20, (uint64_t)&_irq00Handler);      // 0x20 = 32
   setup_IDT_entry(0x21, (uint64_t)&_irq01Handler);      // Handler teclado.
