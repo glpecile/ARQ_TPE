@@ -13,7 +13,7 @@
 
 ***int 80h***
 
-| %rax | System Call   | %rdi             | %rsi              | %rdx              | %r10                | %r8 | %r9 |
+| %rdi | System Call   | %rsi             | %rdx              | %r10              | %r8                 | %r7 | %r6 |
 | ---- | -----------   | ---------------- | ----------------- | ----------------- | ------------------- | --- | --- |
 | 0    | sTicksElapsed |                  |                   |                   |                     |     |     |
 | 1    | sGetTime      | int descriptor   |                   |                   |                     |     |     |
