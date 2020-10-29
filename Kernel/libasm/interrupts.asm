@@ -1,4 +1,5 @@
-
+; Archivo dado por la cátedra. Se realizaron cambios mínimos 
+; para garantizar el funcionamiento de interrupciones.
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask

@@ -1,14 +1,14 @@
 /**
- * Driver de teclado, llamado del metodo getKey() desde syscall x.
+ * Driver de teclado, llamado del metodo getKey() desde syscall 4.
 */
 #include <keyboardDriver.h>
 #define IS_LOWER_CASE(n) ((n) >= 'a' && (n) <= 'z')
 
 void putInBuffer(char c);
-char keyToAscii(char scancode);
+char keyToAscii(int scancode);
 
 /** 
- * Es una matriz que representa los ASCII del teclado, en primer lugar se encuentran
+ *  Matriz que representa los ASCII del teclado, en primer lugar se encuentran
  * los caracteres sin tecla especial y en segundo aquellos cuando se presiona shift.
  * En caso de que la tecla no tenga un ASCII asociado decidimos devolver 0. 
  */
@@ -49,7 +49,7 @@ void putInBuffer(char c)
     }
 }
 
-char keyToAscii(char scancode)
+char keyToAscii(int scancode)
 {
     return pressCodes[scancode][capsLock || shift];
 }
