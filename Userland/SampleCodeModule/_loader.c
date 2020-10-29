@@ -1,4 +1,6 @@
-/* _loader.c */
+/**
+ *  _loader.c: Implementación de barebones sin modificar.
+*/
 #include <stdint.h>
 
 extern char bss;

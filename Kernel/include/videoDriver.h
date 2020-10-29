@@ -1,3 +1,6 @@
+/**
+ * videoDriver.h: contrato para drivers relaiconado al manejo del video.
+ */ 
 #ifndef __videoDriver_H_
 #define __videoDriver_H_
 void drawPixel(int x, int y, int color);
