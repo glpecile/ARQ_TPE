@@ -4,6 +4,9 @@
 #include <keyboardDriver.h>
 #define IS_LOWER_CASE(n) ((n) >= 'a' && (n) <= 'z')
 
+#include <videoDriver.h>
+#include <stdio.h>
+
 void putInBuffer(char c);
 char keyToAscii(int scancode);
 
@@ -16,7 +19,7 @@ static char pressCodes[KEYS][2] = {
     {0, 0}, {ESC, ESC}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'}, {'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'}, {'\b', '\b'}, {'\t', '\t'}, {'q', 'Q'}, {'w', 'W'}, {'e', 'E'}, {'r', 'R'}, {'t', 'T'}, {'y', 'Y'}, {'u', 'U'}, {'i', 'I'}, {'o', 'O'}, {'p', 'P'}, {'[', '{'}, {']', '}'}, {'\n', '\n'}, {0, 0}, {'a', 'A'}, {'s', 'S'}, {'d', 'D'}, {'f', 'F'}, {'g', 'G'}, {'h', 'H'}, {'j', 'J'}, {'k', 'K'}, {'l', 'L'}, {';', ':'}, {'\'', '\"'}, {'`', '~'}, {0, 0}, {'\\', '|'}, {'z', 'Z'}, {'x', 'X'}, {'c', 'C'}, {'v', 'V'}, {'b', 'B'}, {'n', 'N'}, {'m', 'M'}, {',', '<'}, {'.', '>'}, {'/', '?'}, {0, 0}, {0, 0}, {0, 0}, {' ', ' '}};
 static uint64_t shift = 0;
 static uint64_t capsLock = 0;
-static uint64_t bsize = 0;
+static unsigned int bsize = 0;
 static char keyBuffer[MAX_SIZE];
 
 int keyboard_handler()
@@ -35,6 +38,7 @@ int keyboard_handler()
         if (scanCode >= 0 && scanCode < KEYS && pressCodes[scanCode][0] != 0)
         {
             putInBuffer(keyToAscii(scanCode));
+            // putchar(sGetChar());
             return 1;
         }
     }
@@ -43,7 +47,7 @@ int keyboard_handler()
 
 void putInBuffer(char c)
 {
-    if (bsize < MAX_SIZE)
+    if (bsize <= MAX_SIZE)
     {
         keyBuffer[bsize++] = c;
     }

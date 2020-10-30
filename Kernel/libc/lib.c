@@ -1,5 +1,5 @@
 /**
- * Archivo original de barebonesx64.
+ * lib.c: Archivo original de barebones.
 */
 #include <stdint.h>
 

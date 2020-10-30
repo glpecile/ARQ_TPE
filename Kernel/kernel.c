@@ -10,9 +10,7 @@
 #include <rtcDriver.h>
 #include <keyboardDriver.h>
 #include <videoDriver.h>
-
-#define WHITE 0xFFFFFF
-#define BLACK 0x0
+#include <stdio.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -57,25 +55,11 @@ int main()
 {
 	load_idt();
 	((EntryPoint)sampleCodeModuleAddress)();
-	/*
-	drawChar(10, 10, 'F', 1, WHITE, BLACK);
-	// day of the week
-	char *day_of_the_week[2];
-	uintToBase(getTime(DAY_OF_THE_WEEK), day_of_the_week, 10);
-	drawChar(10, 30, day_of_the_week[0], 1, WHITE, BLACK);
-	drawChar(10, 30, day_of_the_week[1], 1, WHITE, BLACK);
-	//hours
-	drawChar(14, 60, getTime(HOURS), 1, WHITE, BLACK);
-	// minutes
-	drawChar(16, 90, getTime(MINUTES), 1, WHITE, BLACK);
-	// seconds
-	drawChar(18, 120, getTime(SECONDS), 1, WHITE, BLACK);
-	*/
-	// test de driver de teclado.
-
-	keyboard_handler();
-
-	while (1)
-		;
+	
+	// test stdio.
+	printStringln("Hola que tal?");
+	while (1) {
+		putchar(sGetChar());
+	}
 	return 0;
 }

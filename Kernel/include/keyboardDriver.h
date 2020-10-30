@@ -20,7 +20,7 @@
  */
 int keyboard_handler();
 /**
- * Obtiene la tecla presionada del buffer, se lo llama desde syscalls.
+ * Retorna la tecla presionada del buffer, se lo llama desde syscalls.
 */
 char sGetChar();
 /**

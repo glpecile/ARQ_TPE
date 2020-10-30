@@ -1,6 +1,4 @@
-#include <stdint.h>
 #include <videoDriver.h>
-#include <font.h>
 
 struct vbe_mode_info_structure
 {
@@ -45,7 +43,7 @@ struct vbe_mode_info_structure *screenData = (void *)0x5C00;
 
 unsigned getPixelDataByPosition(int x, int y)
 {
-	return (x + y * screenData->width) * 3;
+	return (x + y * screenData->width) * PIXEL;
 }
 
 /**
@@ -61,9 +59,9 @@ void drawPixel(int x, int y, int color)
 }
 
 /**
- *  Dibuja un caracter en la pantalla.
+ *  Dibuja un caracter de tamaño, color y posición determinada en pantalla.
  */
-	void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
+void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
 	int aux_x = x;
 	int aux_y = y;
@@ -76,12 +74,12 @@ void drawPixel(int x, int y, int color)
 	{
 		for (int j = 0; j < CHAR_WIDTH; j++)
 		{
-			bitIsPresent = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // preguntar.
+			bitIsPresent = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // desenmascaramos.
 
 			if (bitIsPresent)
-				drawSquare(aux_x, aux_y, fontSize, fontColor); // dibuja la letra.
+				drawPixel(aux_x, aux_y, fontColor); // dibuja la letra.
 			else
-				drawSquare(aux_x, aux_y, fontSize, bgColor); // dibuja el fondo.
+				drawPixel(aux_x, aux_y, bgColor); // dibuja el fondo.
 
 			aux_x += fontSize; // incrementa en x el tamaño.
 		}
@@ -90,6 +88,7 @@ void drawPixel(int x, int y, int color)
 	}
 }
 
+// ver si sirve para el ajedrez.
 void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
 {
 	for (int i = 0; i < b; i++)
@@ -101,7 +100,61 @@ void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
 	}
 }
 
+// idem drawRectangle
 void drawSquare(unsigned int x, unsigned int y, int l, int color)
 {
 	drawRectangle(x, y, l, l, color);
+}
+
+/**
+ * Dibuja el cursor una posición determinada en en la pantalla.
+ */
+void drawCursor(int x, int y)
+{
+	drawChar(x, y, '|', 1, WHITE, BLACK);
+}
+
+/**
+ * Borra un caracter en una posición determinada.
+ */ 
+void deleteChar(int x, int y)
+{
+	drawChar(x, y, ' ', 1, BLACK, BLACK);
+	drawCursor(x, y);
+}
+
+/**
+ * Mueve la pantalla una posición hacia arriba desde la posición actual.
+ */
+void scrollUpScreen()
+{
+	int *screen = ((int *)(uint64_t)screenData->framebuffer);
+
+	int width = screenData->width;
+	int height = screenData->height;
+
+	// Se copia la linea actual una posición más arriba.
+	for (int i = 0; i < CHAR_HEIGHT; i++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			memcpy(screen + (y+1) * width * PIXEL,
+				   screen + y * width * PIXEL,
+				   width * CHAR_WIDTH * PIXEL);
+		}
+	}
+}
+
+/**
+ *  Limpia la pantalla en su toalidad.
+ */
+void clearScreen()
+{
+	int width = screenData->width;
+	int height = screenData->height;
+	for (int i = 0; i < width * height; i++)
+	{
+		drawPixel(i, i, BLACK);
+	}
+	drawCursor(0, 0);
 }
