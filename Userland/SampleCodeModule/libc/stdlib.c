@@ -1,18 +1,18 @@
 /**
- * stdlib.c: libería estandar del usuario.
- */ 
+ * stdlib.c: Libería estandar del usuario.
+ */
 #include <stdlib.h>
 
 int getChar()
 {
     char c = 0;
-    sread(1, &c, 1); // 1: leyo del teclado, &c:el buffer, 1:la cant de ingreso, lea de un char
+    // sread(1, &c, 1); // 1: leyo del teclado, &c:el buffer, 1:la cant de ingreso, lea de un char
     return c;
 }
 
 void printChar(char c)
 {
-    swrite(&c, 1); //recibe de a una letra, su long es 1 siempre
+    _swrite(&c, 1); // Recibe de a una letra, su long es 1 siempre
 }
 
 int strlen(char *s)
@@ -28,8 +28,8 @@ int strlen(char *s)
 
 void print(char *s)
 {
-    int lenght = strlen(s); // buscamos el largo.
-    swrite(s, lenght);
+    int lenght = strlen(s); // Buscamos el largo.
+    _swrite(s, lenght);
 }
 
 int scan(char *buffer, int size)

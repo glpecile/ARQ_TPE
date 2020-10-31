@@ -1,9 +1,13 @@
+;
+; syscallHandler.asm: Nexo entre dispatcher de excepciones (int80h) y syscalls (pasadas por rax).
+;
 GLOBAL _syscallHandler
 EXTERN syscallDispatcher
 
 SECTION .text
 
 %macro pushState 0
+	; ovbiamos rax.
 	push rbx
 	push rcx
 	push rdx
@@ -21,6 +25,7 @@ SECTION .text
 %endmacro
 
 %macro popState 0
+	; obviamos rax.
 	pop r15
 	pop r14
 	pop r13
@@ -37,15 +42,8 @@ SECTION .text
 	pop rbx
 %endmacro
 
-%macro syscallHandler 1
-	pushState
-
-	mov rdi, %1 ; pasaje de parametro
+_syscallHandler:
+    pushState
 	call syscallDispatcher
-
 	popState
 	iretq
-%endmacro
-
-_syscallHandler:
-    syscallHandler 1

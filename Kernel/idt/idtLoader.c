@@ -1,5 +1,6 @@
 /**
- * Archivo provisto por la catedra. Modifiaciones para aplicar interrupciones y llamado a syscalls.
+ * idtLoader.c: Archivo provisto por la catedra. 
+ * Modifiaciones necesarias para aplicar interrupciones pedidas y llamado a syscalls.
 */
 #include <stdint.h>
 #include <idtLoader.h>
@@ -28,11 +29,12 @@ void load_idt()
 {
   _cli();
 
+  setup_IDT_entry(0x00, (uint64_t)&_exception0Handler); // Division por cero handler.
   setup_IDT_entry(0x20, (uint64_t)&_irq00Handler);      // 0x20 = 32
   setup_IDT_entry(0x21, (uint64_t)&_irq01Handler);      // Handler teclado.
-  setup_IDT_entry(0x00, (uint64_t)&_exception0Handler); // Division por cero handler.
   setup_IDT_entry(0x80, (uint64_t)&_syscallHandler);    // Handler para la llamada de syscall.
-  picMasterMask(0xFC);                                  // Interrupcion timer tick y keboard handler habilitadas.
+
+  picMasterMask(0xFC); // Interrupcion timer tick y keboard handler habilitadas.
   picSlaveMask(0xFF);
 
   _sti();

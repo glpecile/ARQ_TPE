@@ -10,13 +10,9 @@
 */
 void putchar(char c);
 /**
- * Imprime un string en pantalla.
-*/
-void printString(char *string);
-/**
- * Imprime un string en una linea en pantalla.
- */
-void printStringln(char *string);
+ * Syscall para escribir en pantalla.
+ */ 
+uint64_t sWrite(char *buffer, int size);
 #endif
 
 

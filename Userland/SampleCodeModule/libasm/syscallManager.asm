@@ -1,7 +1,12 @@
-; syscallManager.asm
+;
+; syscallManager.asm: Manejo de syscalls de Userland a Kernerl.
+; Si bien se debe reducir el código en assembler por no ser portable,
+; es indispensable para la conexión por la interrupción int80h.
+;
 GLOBAL _sTicksElapsed
 GLOBAL _getTime
 GLOBAL _sGetChar
+GLOBAL _swrite
 
 SECTION .text
 
@@ -40,14 +45,13 @@ SECTION .text
 	pop rbx
 %endmacro
 
-%macro syscallManager 1
+%macro syscall 1
 	pushState
 
-    mov rdi, %1 ; pasaje de parametro
-    mov rsi, rdi
-    mov rdx, rsi
     mov rcx, rdx
-
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, %1 ; pasaje de parametro	
     int 80h
 
 	popState
@@ -55,10 +59,13 @@ SECTION .text
 %endmacro
 
 _sTicksElapsed:
-    syscallManager 0
+    syscall 0
 
 _getTime:
-    syscallManager 1
+    syscall 1
+
+_swrite:
+	syscall 3
 
 _sGetChar:
-    syscallManager 4
+    syscall 4

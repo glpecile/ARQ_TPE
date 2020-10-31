@@ -58,9 +58,6 @@ void drawPixel(int x, int y, int color)
 	curpos[data + 2] = (color >> 16) & 255; // R
 }
 
-/**
- *  Dibuja un caracter de tamaño, color y posición determinada en pantalla.
- */
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
 	int aux_x = x;
@@ -78,7 +75,7 @@ void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgC
 
 			if (bitIsPresent)
 				drawPixel(aux_x, aux_y, fontColor); // dibuja la letra.
-			else
+			else 
 				drawPixel(aux_x, aux_y, bgColor); // dibuja el fondo.
 
 			aux_x += fontSize; // incrementa en x el tamaño.
@@ -100,61 +97,45 @@ void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
 	}
 }
 
-// idem drawRectangle
+// idem drawRectangle.
 void drawSquare(unsigned int x, unsigned int y, int l, int color)
 {
 	drawRectangle(x, y, l, l, color);
 }
 
-/**
- * Dibuja el cursor una posición determinada en en la pantalla.
- */
 void drawCursor(int x, int y)
 {
-	drawChar(x, y, '|', 1, WHITE, BLACK);
+	drawChar(x, y, '|', 1, GREEN, BLACK);
 }
 
-/**
- * Borra un caracter en una posición determinada.
- */ 
-void deleteChar(int x, int y)
-{
-	drawChar(x, y, ' ', 1, BLACK, BLACK);
-	drawCursor(x, y);
-}
-
-/**
- * Mueve la pantalla una posición hacia arriba desde la posición actual.
- */
 void scrollUpScreen()
 {
-	int *screen = ((int *)(uint64_t)screenData->framebuffer);
+	int length = (screenData->width * screenData->height * PIXEL) - ((PIXEL * screenData->width) * CHAR_HEIGHT);
+	memcpy((void *)(uint64_t)(screenData->framebuffer), 
+	(void *)(uint64_t)(screenData->framebuffer + (PIXEL * screenData->width) * CHAR_HEIGHT), 
+	length);
+	clearLine();
+}
 
+void clearLine() {
 	int width = screenData->width;
 	int height = screenData->height;
-
-	// Se copia la linea actual una posición más arriba.
-	for (int i = 0; i < CHAR_HEIGHT; i++)
+	for (int i = 0; i < width; i+=CHAR_WIDTH)
 	{
-		for (int y = 0; y < height; y++)
-		{
-			memcpy(screen + (y+1) * width * PIXEL,
-				   screen + y * width * PIXEL,
-				   width * CHAR_WIDTH * PIXEL);
-		}
+		drawChar(i,height-CHAR_HEIGHT,' ',1,BLACK,BLACK);
 	}
 }
 
-/**
- *  Limpia la pantalla en su toalidad.
- */
 void clearScreen()
 {
 	int width = screenData->width;
 	int height = screenData->height;
-	for (int i = 0; i < width * height; i++)
+	for (int i = 0; i < height ; i++)
 	{
-		drawPixel(i, i, BLACK);
+		for (int j = 0; j < width; j++)
+		{
+			drawPixel(i, j, BLACK);
+		}
+		
 	}
-	drawCursor(0, 0);
 }

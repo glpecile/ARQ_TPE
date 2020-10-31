@@ -3,11 +3,8 @@
 */
 #include <stdio.h>
 
-#define WIDTH 1024
-#define HEIGHT 768
-
-int x = 0, y = 0;
 int height = HEIGHT / CHAR_HEIGHT, width = WIDTH / CHAR_WIDTH;
+int x = 0, y = (HEIGHT/CHAR_HEIGHT)-FONT_SIZE;
 
 /**
  * Define una nueva posicón valida para el cursor y lo vuelve a dibujar.
@@ -23,7 +20,7 @@ void setCursor(unsigned int new_x, unsigned int new_y)
         return;
     x = new_x;
     y = new_y;
-    // drawCursor(x, y);
+    drawCursor(x*CHAR_WIDTH, y*CHAR_HEIGHT);
 }
 
 void putchar(char c)
@@ -42,30 +39,27 @@ void putchar(char c)
     default:
         // Se debe ver si saltar de linea o quedarse en la misma.
         drawChar(x*CHAR_WIDTH, y*CHAR_HEIGHT, c, FONT_SIZE, WHITE, BLACK);
-        ((x+=FONT_SIZE) >= width) ? setCursor(0, y + 1) : setCursor(x, y);
+        ((x += FONT_SIZE) > width) ? enter() : setCursor(x, y);
     }
 }
 
-void printString(char *string)
+uint64_t sWrite(char *buffer, int size)
 {
-    while (*string != 0)
+    while (size-- && *buffer != 0)
     {
-        putchar(*string);
-        string++;
+        putchar(*buffer);
+        buffer++;
     }
-}
-
-void printStringln(char *string)
-{
-    printString(string);
-    putchar('\n');
+    return size == 0;
 }
 
 void backspace()
 {
     if (x == 0 && y == 0)
         return;
-    deleteChar(x, y);
+    setCursor(x-FONT_SIZE, y);
+    putchar(' ');
+    x-=FONT_SIZE;
 }
 
 void enter()
@@ -73,15 +67,15 @@ void enter()
     if (y < height)
     {
         scrollUpScreen();
-        setCursor(x, y - FONT_SIZE);
     }
     else
     {
         clearScreen();
     }
+    setCursor(0, y); 
 }
 
 void tab()
 {
-    ((x += (4*FONT_SIZE)) <= width) ? setCursor(x, y) : enter();
+    ((x += (4 * FONT_SIZE)) < width) ? setCursor(x, y) : enter();
 }

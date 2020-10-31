@@ -2,7 +2,6 @@
  *  Limpiamos un poco lo previamente establecido.
  */
 #include <stdint.h>
-#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <idtLoader.h>
@@ -54,12 +53,7 @@ void *initializeKernelBinary()
 int main()
 {
 	load_idt();
+	setCursor(0, (HEIGHT / CHAR_HEIGHT) - FONT_SIZE);
 	((EntryPoint)sampleCodeModuleAddress)();
-	
-	// test stdio.
-	printStringln("Hola que tal?");
-	while (1) {
-		putchar(sGetChar());
-	}
 	return 0;
 }
