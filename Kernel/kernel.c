@@ -1,7 +1,6 @@
 /**
- *  Limpiamos un poco lo previamente establecido.
+ *  kernel.c: Archivo original de barebones. Se limpia lo no utilizado de modo texto.
  */
-#include <stdint.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <idtLoader.h>
@@ -53,7 +52,6 @@ void *initializeKernelBinary()
 int main()
 {
 	load_idt();
-	setCursor(0, (HEIGHT / CHAR_HEIGHT) - FONT_SIZE);
 	((EntryPoint)sampleCodeModuleAddress)();
 	return 0;
 }
