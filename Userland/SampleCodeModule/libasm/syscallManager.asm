@@ -7,6 +7,7 @@ GLOBAL _sTicksElapsed
 GLOBAL _getTime
 GLOBAL _sGetChar
 GLOBAL _swrite
+GLOBAL _setCursor
 
 SECTION .text
 
@@ -69,3 +70,6 @@ _swrite:
 
 _sGetChar:
     syscall 4
+
+_setCursor:
+	syscall 5

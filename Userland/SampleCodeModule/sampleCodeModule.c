@@ -1,12 +1,11 @@
 /**
  *  sampleCodeModule.c: Archivo original de barebones modificado para poder correr shell.
  */
-#include <stdlib.h>
+#include <shell.h>
 
 int main()
 {
-	// print("Chau");
-	while (1)
-		;
+	print("Chau");
+	intializeShell();
 	return 0;
 }

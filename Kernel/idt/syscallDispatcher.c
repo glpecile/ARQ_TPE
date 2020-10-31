@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// uint64_t sWrite(char *buffer, int size);
+
 // uint64_t sRead(int fd, char *buffer, int lenght);
 
 uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
@@ -20,15 +20,16 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         case 1:
             return getTime(rsi);
         case 2:
-            // return sRead(int fd, char *buffer, int lenght);
-            break;
+            return sGetChar();
         case 3:
+            // uint64_t sWrite(char *buffer, int size);
             return sWrite((char *)rsi, rdx);
         case 4:
             return sGetChar();          
         case 5:
-            break; 
-        
+            // setCursor(unsigned int new_x, unsigned int new_y);
+            setCursor(rsi,rdx);
+            return 1;
         default:
             break;
     }
