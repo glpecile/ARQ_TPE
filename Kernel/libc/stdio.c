@@ -4,15 +4,12 @@
 #include <stdio.h>
 
 int height = HEIGHT / CHAR_HEIGHT, width = WIDTH / CHAR_WIDTH;
-int x = 0, y = (HEIGHT/CHAR_HEIGHT)-FONT_SIZE;
+int x = 0, y = (HEIGHT/CHAR_HEIGHT)-FONT_SIZE, blink = 0;
 
-/**
- * Define una nueva posicón valida para el cursor y lo vuelve a dibujar.
-*/
-void setCursor(unsigned int new_x, unsigned int new_y);
 void backspace();
 void enter();
 void tab();
+void blinkCursor();
 
 void setCursor(unsigned int new_x, unsigned int new_y)
 {
@@ -20,7 +17,11 @@ void setCursor(unsigned int new_x, unsigned int new_y)
         return;
     x = new_x;
     y = new_y;
-    drawCursor(x*CHAR_WIDTH, y*CHAR_HEIGHT);
+    blinkCursor();
+}
+
+void blinkCursor() {
+    drawCursor(x * CHAR_WIDTH, y * CHAR_HEIGHT, blink = !blink);
 }
 
 void putchar(char c)
@@ -59,19 +60,20 @@ void backspace()
         return;
     setCursor(x-FONT_SIZE, y);
     putchar(' ');
+    if (blink)
+    {
+        blinkCursor();
+    }
     x-=FONT_SIZE;
 }
 
 void enter()
 {
-    if (y < height)
+    if (blink)
     {
-        scrollUpScreen();
+        blinkCursor();
     }
-    else
-    {
-        clearScreen();
-    }
+    (y < height) ? scrollUpScreen() : clearScreen();
     setCursor(0, y); 
 }
 

@@ -103,9 +103,9 @@ void drawSquare(unsigned int x, unsigned int y, int l, int color)
 	drawRectangle(x, y, l, l, color);
 }
 
-void drawCursor(int x, int y)
+void drawCursor(int x, int y, int blink)
 {
-	drawChar(x, y, '|', 1, GREEN, BLACK);
+	blink ? drawChar(x, y, '|', 1, GREEN, BLACK) : drawChar(x, y, ' ', 1, BLACK, BLACK);
 }
 
 void scrollUpScreen()
