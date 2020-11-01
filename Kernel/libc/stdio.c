@@ -24,7 +24,7 @@ void blinkCursor() {
     drawCursor(x * CHAR_WIDTH, y * CHAR_HEIGHT, blink = !blink);
 }
 
-void putchar(char c)
+void putchar(char c, int color)
 {
     switch (c)
     {
@@ -39,19 +39,23 @@ void putchar(char c)
         break;
     default:
         // Se debe ver si saltar de linea o quedarse en la misma.
-        drawChar(x*CHAR_WIDTH, y*CHAR_HEIGHT, c, FONT_SIZE, WHITE, BLACK);
+        drawChar(x*CHAR_WIDTH, y*CHAR_HEIGHT, c, FONT_SIZE, color, BLACK);
         ((x += FONT_SIZE) > width) ? enter() : setCursor(x, y);
     }
 }
 
-uint64_t sWrite(char *buffer, int size)
+uint64_t sWrite(char *buffer, int size, int color)
 {
     while (size-- && *buffer != 0)
     {
-        putchar(*buffer);
+        putchar(*buffer, color);
         buffer++;
     }
     return size == 0;
+}
+
+void print(char *string) {
+    sWrite(string, strlen(string), WHITE);
 }
 
 void backspace()
@@ -59,7 +63,7 @@ void backspace()
     if (x == 0 && y == 0)
         return;
     setCursor(x-FONT_SIZE, y);
-    putchar(' ');
+    putchar(' ', BLACK);
     if (blink)
     {
         blinkCursor();

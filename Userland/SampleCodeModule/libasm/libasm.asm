@@ -4,11 +4,11 @@ GLOBAL exit
 
 section .text 
 
-; int swrite(unsigned int fd, char *buffer, int size);
+; int swrite(unsigned int fd, char *buffer, int size, int color);
 swrite:
     enter 0,0
 
-    mov rax, 1      ;syscall de write
+    mov rax, 1      ;syscall de write.
     syscall
 
     leave

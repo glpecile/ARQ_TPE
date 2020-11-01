@@ -1,3 +1,8 @@
+/**
+ * irqDispatcher.c: Archivo aportado por la cátedra que se encarga 
+ * de las interrupciones de hardware. 
+ * Modificado para el uso timerTick y keyboardHandler.
+*/
 #include <time.h>
 #include <stdint.h>
 #include <keyboardDriver.h>

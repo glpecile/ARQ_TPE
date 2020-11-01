@@ -38,7 +38,6 @@ int keyboard_handler()
         if (scanCode >= 0 && scanCode < KEYS && pressCodes[scanCode][0] != 0)
         {
             putInBuffer(keyToAscii(scanCode));
-            //putchar(sGetChar());
             return 1;
         }
     }
@@ -73,6 +72,5 @@ char sGetChar()
         }
     }
     bsize--;
-    // sWrite(&key, 1);
     return key;
 }

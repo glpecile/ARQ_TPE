@@ -1671,7 +1671,7 @@ static unsigned char __font_bitmap__[] = {
 	___XX___,
 	___XX___,
 	___XX___,
-	________,
+	___XX___,
 	___XX___,
 	___XX___,
 	___XX___,

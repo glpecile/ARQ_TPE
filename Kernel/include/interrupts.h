@@ -1,8 +1,7 @@
  /*
- *   interrupts.h
- *
- *  Created on: Apr 18, 2010
- *      Author: anizzomc
+ * interrupts.h: Archivo provisto por la cátedra.
+ * Modificado únicamente para incluír la excepción por 
+ * código de operación inválido. 
  */
 
 #ifndef INTERRUPS_H_
@@ -18,6 +17,7 @@ void _irq04Handler(void);
 void _irq05Handler(void);
 
 void _exception0Handler(void);
+void _exception6Handler(void);
 
 void _cli(void);
 

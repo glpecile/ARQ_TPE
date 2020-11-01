@@ -1,5 +1,7 @@
-; Archivo dado por la cátedra. Se realizaron cambios mínimos 
+;
+; interrupts.asm : Archivo dado por la cátedra. Se realizaron cambios mínimos 
 ; para garantizar el funcionamiento de interrupciones.
+;
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
@@ -15,6 +17,7 @@ GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -76,7 +79,8 @@ SECTION .text
 %macro exceptionHandler 1
 	pushState
 
-	mov rdi, %1 ; pasaje de parametro
+	mov rdi, %1 ; pasaje de parametro.
+	mov rsi, rsp ; pasaje de stack pointer para imprimir registros.
 	call exceptionDispatcher
 
 	popState
@@ -143,6 +147,10 @@ _irq05Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Invalid Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli
