@@ -6,6 +6,10 @@
 int main()
 {
 	print("Chau");
+	
 	intializeShell();
-	return 0;
+	// while(1){
+	// 	putChar(getChar());
+	// }
+	return 0;                                                                                                                                                                                                                                                                                                                                                                           
 }

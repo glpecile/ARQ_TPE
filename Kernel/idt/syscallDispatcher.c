@@ -13,7 +13,7 @@
 
 uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
 {
-    switch (rdi)
+     switch (rdi)
     {
         case 0:
             return sTicksElapsed();
@@ -25,7 +25,7 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
             // uint64_t sWrite(char *buffer, int size);
             return sWrite((char *)rsi, rdx);
         case 4:
-            return sGetChar();          
+            return sGetChar();
         case 5:
             // setCursor(unsigned int new_x, unsigned int new_y);
             setCursor(rsi,rdx);

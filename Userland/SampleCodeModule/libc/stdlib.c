@@ -3,27 +3,14 @@
  */
 #include <stdlib.h>
 
-int getChar()
+uint64_t getChar()
 {
-    char c = 0;
-    // sread(1, &c, 1); // 1: leyo del teclado, &c:el buffer, 1:la cant de ingreso, lea de un char
-    return c;
+	return _sGetChar();
 }
 
 void putChar(char c)
 {
     _swrite(&c, 1); // Recibe de a una letra, su long es 1 siempre
-}
-
-int strlen(char *s)
-{
-    int i = 0;
-    while (*s != '\0')
-    {
-        i++;
-        s++;
-    }
-    return i;
 }
 
 void print(char *s)
@@ -46,6 +33,17 @@ int scan(char *buffer, int size)
     return len;
 }
 
+/* string */
+int strlen(char *s)
+{
+    int i = 0;
+    while (*s != '\0')
+    {
+        i++;
+        s++;
+    }
+    return i;
+}
 int strtok(char * s, char delim, char * array[], int arraySize){
 	int arrayIndex = 0;
 	if(*s != delim && *s != '\0')
@@ -71,3 +69,60 @@ int strcmp(char * s1, char * s2){
 
 	return *s1 == 0 && *s2 == 0;
 }
+
+/* Manejo de hexa*/
+// uint32_t uintToBase(uint64_t value, char *buffer, uint32_t base)
+// {
+// 	char *p = buffer;
+// 	char *p1, *p2;
+// 	uint32_t digits = 0;
+
+// 	//Calculate characters for each digit
+// 	do
+// 	{
+// 		uint32_t remainder = value % base;
+// 		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+// 		digits++;
+// 	} while (value /= base);
+
+// 	// Terminate string in buffer.
+// 	*p = 0;
+
+// 	//Reverse string in buffer.
+// 	p1 = buffer;
+// 	p2 = p - 1;
+// 	while (p1 < p2)
+// 	{
+// 		char tmp = *p1;
+// 		*p1 = *p2;
+// 		*p2 = tmp;
+// 		p1++;
+// 		p2--;
+// 	}
+
+// 	return digits;
+// }
+
+// void printHex(uint64_t value)
+// {
+// 	printBase(value, 16);
+// }
+
+// void printBase(uint64_t value, uint32_t base)
+// {
+// 	uintToBase(value, buffer, base);
+// 	print(buffer);
+// }
+
+// void hexaToInt(uint64_t value){
+//     int buffer[16];
+//     int dig = unitToBase(value, buffer, 16);
+//     int num = 16 - dig; 
+//     for(int i=15; i >= 0; i--){
+//         if(i >= num){
+//                 buffer[i] = buffer[i-num];
+//             }else{
+//                 buffer[i] = '0';
+//             }
+//     }
+// }
