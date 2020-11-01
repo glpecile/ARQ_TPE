@@ -16,10 +16,11 @@ void intializeShell()
     int exit = 0;
     char input[MAX_INPUT];
     //loadCommands();
-    _setCursor(0, HEIGHT-CHAR_HEIGHT);
+    _setCursor(0, HEIGHT - CHAR_HEIGHT);
     while (1) // !exit
     {
         readInput(input, MAX_INPUT);
+        putChar('\n');
         exit = processInput(input);
     }
 }
@@ -47,23 +48,24 @@ void readInput(char *inputBuffer, int maxSize)
     // print("Entre.");
     int size = 0;
     uint64_t c;
-    while (size < (maxSize - 1) && (c = getChar()) != '\n'){
-        // putChar(c);
-        if (c != '\b')
+    while (size < (maxSize - 1) && (c = getChar()) != '\n')
+    {
+        if (c) // Verificamos que se presiona una letra.
         {
-            putChar(c);
-            inputBuffer[size++] = c;
-
-        }
-        else if (size > 0)
-        {
-            putChar('\b');
-            size--;
+            if (c != '\b')
+            {
+                putChar(c);
+                inputBuffer[size++] = c;
+            }
+            else if (size > 0)
+            {
+                putChar('\b');
+                size--;
+            }
         }
     }
+    // Ponemos la marca de final al string.
     inputBuffer[size++] = 0;
-    putChar('d');
-    putChar('\n');
 }
 
 int processInput(char *inputBuffer)
@@ -109,7 +111,7 @@ void inforeg(uint64_t *reg)
     {
         print(regs[i]);
         print(":  0x");
- //       uintToBase(regs[i],buffer,16);
+        //       uintToBase(regs[i],buffer,16);
         putChar('\n');
     }
 }
@@ -118,17 +120,17 @@ void printCurrentTime()
 {
 }
 
-// void printMem(){
-// uint64_t num;
-//    char buffer[32]; 
-// uint8_t * address = (uint8_t *) num;
+void printMem(){
+    uint64_t num;
+   char buffer[32];
+    uint8_t * address = (uint8_t *) num;
 
-    // for (int i = 0; i < 4; i++){
-    //     for (int j = 0; j < 8; j++){
-    //         uintToBase(*(address + 8*i + j), buffer, 16);
-    //         print(buffer);
-    //         putchar(' ');
-    //     }
-    //     putchar('\n'); 
-    // } 
-// }
+    for (int i = 0; i < 4; i++){
+        for (int j = 0; j < 8; j++){
+            uintToBase(*(address + 8*i + j), buffer, 16);
+            print(buffer);
+            putchar(' ');
+        }
+        putchar('\n');
+    }
+}
