@@ -73,6 +73,7 @@ int processInput(char *inputBuffer)
 {
     char *args[MAX_ARGUMENTS];
     int argSize = strtok(inputBuffer, ' ', args, MAX_ARGUMENTS);
+    //verificamos la cant de args antes de compararlo con los existentes
     if (argSize <= 0 || argSize > 1)
     {
         print("Invalid amount of arguments.\n");
