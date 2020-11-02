@@ -9,6 +9,7 @@
 #include <keyboardDriver.h>
 #include <videoDriver.h>
 #include <stdio.h>
+#include <exceptions.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -52,6 +53,6 @@ void *initializeKernelBinary()
 int main()
 {
 	load_idt();
-	((EntryPoint)sampleCodeModuleAddress)();
-	return 0;
+	initialStateSnapshot((uint64_t)sampleCodeModuleAddress, getSP());
+	return ((EntryPoint)sampleCodeModuleAddress)();
 }

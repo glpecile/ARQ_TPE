@@ -46,9 +46,6 @@ unsigned getPixelDataByPosition(int x, int y)
 	return (x + y * screenData->width) * PIXEL;
 }
 
-/**
- * Dibuja un pixel en la pantalla.
- */
 void drawPixel(int x, int y, int color)
 {
 	char *curpos = ((char *)(uint64_t)screenData->framebuffer);
@@ -60,28 +57,31 @@ void drawPixel(int x, int y, int color)
 
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
+	drawFigure(charBitmap(character),x,y,fontSize,fontColor,bgColor,CHAR_HEIGHT,CHAR_WIDTH);
+}
+
+void drawFigure(unsigned char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width)
+{
 	int aux_x = x;
 	int aux_y = y;
 
-	char bitIsPresent;
+	char isForeground; // Flag para definir si dibujar el fondo o no. 
 
-	unsigned char *toDraw = charBitmap(character); // consigue la letra de la estructura en font.c
-
-	for (int i = 0; i < CHAR_HEIGHT; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < CHAR_WIDTH; j++)
+		for (int j = 0; j < width; j++)
 		{
-			bitIsPresent = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // desenmascaramos.
+			isForeground = (1 << (width - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
 
-			if (bitIsPresent)
-				drawPixel(aux_x, aux_y, fontColor); // dibuja la letra.
-			else 
-				drawPixel(aux_x, aux_y, bgColor); // dibuja el fondo.
+			if (isForeground)
+				drawPixel(aux_x, aux_y, fgColor); // dibuja la parte de la figura especificada figura.
+			else
+				drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
 
-			aux_x += fontSize; // incrementa en x el tamaño.
+			aux_x += size; // incrementa en x el tamaño.
 		}
 		aux_x = x;
-		aux_y += fontSize; // incrementa en y el tamaño.
+		aux_y += size; // incrementa en y el tamaño.
 	}
 }
 
@@ -111,18 +111,19 @@ void drawCursor(int x, int y, int blink)
 void scrollUpScreen()
 {
 	int length = (screenData->width * screenData->height * PIXEL) - ((PIXEL * screenData->width) * CHAR_HEIGHT);
-	memcpy((void *)(uint64_t)(screenData->framebuffer), 
-	(void *)(uint64_t)(screenData->framebuffer + (PIXEL * screenData->width) * CHAR_HEIGHT), 
-	length);
+	memcpy((void *)(uint64_t)(screenData->framebuffer),
+		   (void *)(uint64_t)(screenData->framebuffer + (PIXEL * screenData->width) * CHAR_HEIGHT),
+		   length);
 	clearLine();
 }
 
-void clearLine() {
+void clearLine()
+{
 	int width = screenData->width;
 	int height = screenData->height;
-	for (int i = 0; i < width; i+=CHAR_WIDTH)
+	for (int i = 0; i < width; i += CHAR_WIDTH)
 	{
-		drawChar(i,height-CHAR_HEIGHT,' ',1,BLACK,BLACK);
+		drawChar(i, height - CHAR_HEIGHT, ' ', 1, BLACK, BLACK);
 	}
 }
 
@@ -130,12 +131,11 @@ void clearScreen()
 {
 	int width = screenData->width;
 	int height = screenData->height;
-	for (int i = 0; i < height ; i++)
+	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
 			drawPixel(i, j, BLACK);
 		}
-		
 	}
 }

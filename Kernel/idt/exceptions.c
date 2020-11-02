@@ -12,10 +12,24 @@ static char *regs_to_print[REG_SIZE] = {
 	"RAX: 0x", "IP: 0x", "RSP: 0x"};
 static void zero_division();
 static void invalid_opcode();
+void printreg(uint64_t *reg);
+void returnToSnapshot(uint64_t *stackframe);
+/**
+ * Variables para el guardado del estado inicial del stack pointer y la posición del sampleCodeModuleAdress
+ * para luego recuperar ese estado al realizar una interrupción.
+ */
+static uint64_t snapshotIP,
+	snapshotSP;
 
 void printError(char *message)
 {
 	sWrite(message, strlen(message), RED);
+}
+
+void initialStateSnapshot(uint64_t IP, uint64_t SP)
+{
+	snapshotIP = IP;
+	snapshotSP = SP;
 }
 
 void exceptionDispatcher(int exception, uint64_t *stackframe)
@@ -32,6 +46,14 @@ void exceptionDispatcher(int exception, uint64_t *stackframe)
 		break;
 	}
 	printreg(stackframe);
+	printError("RESTARTING SHELL...");
+	returnToSnapshot(stackframe);
+}
+
+void returnToSnapshot(uint64_t *stackframe)
+{
+	stackframe[REG_SIZE - 2] = snapshotIP; // RIP
+	stackframe[REG_SIZE + 1] = snapshotSP; // RSP
 }
 
 // Función idéntica en funcionamiento a printreg.
@@ -45,10 +67,11 @@ void printreg(uint64_t *reg)
 		print(toPrint);
 		putchar('\n', WHITE);
 	}
-	// Resta imprimir el rsp.
-	print(regs_to_print[REG_SIZE-1]);
-	uintToBase(reg[15 + 3], toPrint, 16);
+	// Resta imprimir el RSP.
+	print(regs_to_print[REG_SIZE - 1]);
+	uintToBase(reg[REG_SIZE + 1], toPrint, 16); // Caso especial CS y flags.
 	print(toPrint);
+	putchar('\n', WHITE);
 }
 
 void zero_division()

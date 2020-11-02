@@ -27,13 +27,13 @@ void intializeShell()
 
 void loadCommands()
 {
-    loadCommand(&inforeg, "inforeg", "Prints all the registers.\n");
-    loadCommand(&help, "help", "Prints the description of all functions.\n");
-    loadCommand(&printCurrentTime, "time", "Prints the current time.\n");
+    loadCommand(&inforeg, "inforeg", "Displays all the information regarding the registers.\n");
+    loadCommand(&help, "help", "Displays the description of all functions available.\n");
+    loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess,"chess", "Chess game, play a 1v1 match against a friend or yourself!. -c for continue\n");
+    loadCommand(&chess,"chess", "Chess game, play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -76,10 +76,9 @@ int processInput(char *inputBuffer)
     //verificamos la cant de args antes de compararlo con los existentes
     if (argSize <= 0 || argSize > 1)
     {
-        print("Invalid amount of arguments.\n");
+        print("Invalid amount of arguments, try again.\n");
         return 0;
     }
-
     for (int i = 0; i < sizeC; i++)
     {
         if (strcmp(args[0], commands[i].name))
@@ -90,7 +89,7 @@ int processInput(char *inputBuffer)
             return 1;           
         }
     }
-    print("Invalid amount of arguments.\n");
+    print("Invalid command, try again.\n");
     return 0;
 }
 
@@ -100,16 +99,16 @@ int processInput(char *inputBuffer)
  ************************************
 */
 void printUser(){
-	char s[15] = "user@TP:$ ";
-    printWithColor(s, GREEN);
+	char s[] = "Clifford@TPE_ARQ:$ ";
+    printWithColor(s, LIGHT_BLUE);
 }
 
 void help()
 {
     for (int i = 0; i < sizeC; i++)
     {
-        print(commands[i].name);
-        print(":");
+        printWithColor(commands[i].name, YELLOW);
+        print(": ");
         print(commands[i].description);
         putChar('\n');
     }
@@ -118,15 +117,16 @@ void help()
 void inforeg(uint64_t *reg)
 {
     static char *regs[REG_SIZE] = {
-        "RAX: 0x", "RBX: 0x", "RCX: 0x", "RDX: 0x", "RBP: 0x", "RDI: 0x", "RSI: 0x",
-        "R08: 0x", "R09: 0x", "R10: 0x", "R11: 0x", "R12: 0x", "R13: 0x", "R14: 0x",
-        "R15: 0x", "IP : 0x", "RSP: 0x"};
+        "RAX", "RBX", "RCX", "RDX", "RBP", "RDI", "RSI",
+        "R08", "R09", "R10", "R11", "R12", "R13", "R14",
+        "R15", "IP ", "RSP"};
 
     char toPrint[20];
     for (int i = 0; i < REG_SIZE; i++)
     {
-        print(regs[i]);
+        printWithColor(regs[i],YELLOW);
         uintToBase(reg[i], toPrint, 16);
+        print(":");
         print(toPrint);
         putChar('\n');
     }

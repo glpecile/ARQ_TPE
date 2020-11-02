@@ -8,10 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
-// uint64_t sRead(int fd, char *buffer, int lenght);
-
-uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx)
+uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, ...)
 {
     switch (rdi)
     {
@@ -20,7 +17,8 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         case 1:
             return getTime(rsi);
         case 2:
-            return sGetChar();
+            // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
+            return 1;
         case 3:
             // uint64_t sWrite(char *buffer, int size, int color);
             return sWrite((char *)rsi, rdx, rcx);

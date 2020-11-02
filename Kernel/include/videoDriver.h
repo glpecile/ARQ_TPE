@@ -14,6 +14,9 @@
  * Mueve la pantalla una posición hacia arriba desde la posición actual.
  */
 void scrollUpScreen();
+/**
+ * Dibuja un pixel en la pantalla.
+ */
 void drawPixel(int x, int y, int color);
 /**
  * Dibuja el cursor una posición determinada en en la pantalla.
@@ -23,6 +26,10 @@ void drawCursor(int x, int y, int blink);
  *  Dibuja un caracter de tamaño, color y posición determinada en pantalla.
  */
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor);
+/**
+ * Dibuja una figura genérica pasada como vector de chars en las coordenadas deseadas.
+ */ 
+void drawFigure(unsigned char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
 void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color);
 void drawSquare(unsigned int x, unsigned int y, int l, int color);
 /**
