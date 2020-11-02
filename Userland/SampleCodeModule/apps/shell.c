@@ -6,7 +6,7 @@
 #define MAX_INPUT 30
 #define MAX_SIZE 10
 #define MAX_ARGUMENTS 3
-#define REG_SIZE 15
+#define REG_SIZE 17
 
 t_command commands[MAX_SIZE];
 static int sizeC = 0;
@@ -53,7 +53,7 @@ void readInput(char *inputBuffer, int maxSize)
         if (c) // Verificamos que se presiona una letra.
         {
             if (c != '\b')
-            {   
+            {
                 putChar(c);
                 inputBuffer[size++] = c;
             }
@@ -73,11 +73,12 @@ int processInput(char *inputBuffer)
 {
     char *args[MAX_ARGUMENTS];
     int argSize = strtok(inputBuffer, ' ', args, MAX_ARGUMENTS);
-    if (argSize < 0 || argSize > 1){
+    if (argSize <= 0 || argSize > 1)
+    {
         print("Invalid amount of arguments.\n");
         return 0;
     }
-    
+
     for (int i = 0; i < sizeC; i++)
     {
         if (strcmp(args[0], commands[i].name))
@@ -85,14 +86,16 @@ int processInput(char *inputBuffer)
             commands[i].command(argSize - 1, args + 1);
             return 1;
         }
-        
     }
+    print("Invalid amount of arguments.\n");
     return 0;
 }
 
-/************************************* 
+/*
+ ************************************ 
  * COMANDOS 
- *************************************/
+ ************************************
+*/
 void help()
 {
     for (int i = 0; i < sizeC; i++)
@@ -108,14 +111,15 @@ void inforeg(uint64_t *reg)
 {
     static char *regs[REG_SIZE] = {
         "RAX: 0x", "RBX: 0x", "RCX: 0x", "RDX: 0x", "RBP: 0x", "RDI: 0x", "RSI: 0x",
-        "R8: 0x", "R9: 0x", "R10: 0x", "R11: 0x", "R12: 0x", "R13: 0x", "R14: 0x", "R15: 0x"};
+        "R08: 0x", "R09: 0x", "R10: 0x", "R11: 0x", "R12: 0x", "R13: 0x", "R14: 0x",
+        "R15: 0x", "IP : 0x", "RSP: 0x"};
 
-    char buffer[20];
+    char toPrint[20];
     for (int i = 0; i < REG_SIZE; i++)
     {
         print(regs[i]);
-        uintToBase(reg[i], buffer, 16);
-        print(buffer);
+        uintToBase(reg[i], toPrint, 16);
+        print(toPrint);
         putChar('\n');
     }
 }
@@ -147,14 +151,12 @@ void printCurrentTime()
 void printmem(int argSize, char *args[])
 {
     uint64_t num = hexaToInt(args[0]);
-    char buffer[32];
+    char toPrint[32];
 
     for (int i = 0; i < 32; i++)
     {
-        uintToBase((num + i), buffer, 16);
-        //print(buffer);
-        printHex(buffer[i]);
-        //
+        uintToBase((num + i), toPrint, 16);
+        printHex(toPrint[i]);
         putChar(' ');
     }
     putChar('\n');
@@ -169,7 +171,9 @@ void invalidOpCodeException(int argSize, char *args[])
 void invalidZeroDivisionException(int argSize, char *args[])
 {
     int a = 0, b = (1 / a); // dividimos por 0.
-    if (b) {}
+    if (b)
+    {
+    }
 }
 
 // void chess(int argSize, char *args[]){

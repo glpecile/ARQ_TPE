@@ -37,18 +37,18 @@ void exceptionDispatcher(int exception, uint64_t *stackframe)
 // Función idéntica en funcionamiento a printreg.
 void printreg(uint64_t *reg)
 {
-	char buffer[20];
+	char toPrint[30];
 	for (int i = 0; i < REG_SIZE; i++)
 	{
 		print(regs_to_print[i]);
-		uintToBase(reg[i], buffer, 16);
-		print(buffer);
+		uintToBase(reg[i], toPrint, 16);
+		print(toPrint);
 		putchar('\n', WHITE);
 	}
 	// Resta imprimir el rsp.
 	print(regs_to_print[REG_SIZE-1]);
-	uintToBase(reg[15 + 3], buffer, 16);
-	print(buffer);
+	uintToBase(reg[15 + 3], toPrint, 16);
+	print(toPrint);
 }
 
 void zero_division()
