@@ -4,6 +4,8 @@
 #ifndef _SHELL_H_
 #define _SHELL_H_
 #include <stdlib.h>
+#include <chess.h>
+
 /**
  * Decidimos usar defines para la resolución de la pantalla ya que una syscall es más costosa.
  */
@@ -25,6 +27,9 @@ typedef struct{
     char *name;
     char *description;
 }t_command;
+
+extern void _setCursor(int x, int y);
+
 /**
  * Inicializa la estructura que ejecuta los programas del usuario.
 */
@@ -42,12 +47,13 @@ void readInput(char * inputBuffer, int maxSize);
 int processInput(char *inputBuffer);
 
 /****************** COMANDOS ******************/
+void printUser();
 void help();
 void inforeg(uint64_t *reg);
 void printCurrentTime();
 void printmem();
-void invalidOpCodeException(int argSize, char *args[]);
-void invalidZeroDivisionException(int argSize, char *args[]);
-extern void _setCursor(int x, int y);
+void invalidOpCodeException();
+void invalidZeroDivisionException();
+void chess(int argSize, char *args[]);
 
 #endif

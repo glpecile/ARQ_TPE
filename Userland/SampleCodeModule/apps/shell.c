@@ -19,7 +19,8 @@ void intializeShell()
     _setCursor(0, HEIGHT - CHAR_HEIGHT / 2);
     while (1) // !exit
     {
-        readInput(input, MAX_INPUT);
+        printUser();
+        readInput(input, MAX_INPUT);    
         processInput(input);
     }
 }
@@ -32,7 +33,7 @@ void loadCommands()
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    // loadCommand(&chess,"chess", "Chess game, play a 1v1 match against a friend or yourself!\n");
+    loadCommand(&chess,"chess", "Chess game, play a 1v1 match against a friend or yourself!. -c for continue\n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -47,7 +48,6 @@ void readInput(char *inputBuffer, int maxSize)
 {
     int size = 0;
     uint64_t c;
-    printUser();
     while (size < (maxSize - 1) && (c = getChar()) != '\n')
     {
         if (c) // Verificamos que se presiona una letra.
@@ -85,7 +85,9 @@ int processInput(char *inputBuffer)
         if (strcmp(args[0], commands[i].name))
         {
             commands[i].command(argSize - 1, args + 1);
-            return 1;
+            if(strcmp("time", commands[i].name))
+                print("segui");
+            return 1;           
         }
     }
     print("Invalid amount of arguments.\n");
@@ -97,6 +99,11 @@ int processInput(char *inputBuffer)
  * COMANDOS 
  ************************************
 */
+void printUser(){
+	char s[15] = "user@TP:$ ";
+    printWithColor(s, GREEN);
+}
+
 void help()
 {
     for (int i = 0; i < sizeC; i++)
@@ -127,23 +134,21 @@ void inforeg(uint64_t *reg)
 // void numToStr(int num, char *string, int len)
 void printCurrentTime()
 {
-    char hours[2];
-    numToStr(_getTime(HOURS), hours, 2);
-    print(hours);
-    print(":");
-    char minutes[2];
-    numToStr(_getTime(MINUTES), minutes, 2);
-    print(minutes);
-    print(", ");
-    char day_of_the_month[2];
-    numToStr(_getTime(DAY_OF_THE_MONTH), day_of_the_month, 2);
-    print(day_of_the_month);
-    print("/");
-    char month[2];
-    numToStr(_getTime(MONTH), month, 2);
-    print(month);
-    print("/");
+    char toPrint[2];
     char year[4];
+
+    numToStr(_getTime(HOURS), toPrint, 2);
+    print(toPrint);
+    print(":");
+    numToStr(_getTime(MINUTES), toPrint, 2);
+    print(toPrint);
+    print(", ");
+    numToStr(_getTime(DAY_OF_THE_MONTH), toPrint, 2);
+    print(toPrint);
+    print("/");
+    numToStr(_getTime(MONTH), toPrint, 2);
+    print(toPrint);
+    print("/");  
     numToStr(_getTime(YEAR) + 2000, year, 4);
     print(year);
     putChar('\n');
@@ -164,12 +169,12 @@ void printmem(int argSize, char *args[])
 }
 
 // source: https://www.felixcloutier.com/x86/ud.
-void invalidOpCodeException(int argSize, char *args[])
+void invalidOpCodeException()
 {
     __asm__("ud2");
 }
 
-void invalidZeroDivisionException(int argSize, char *args[])
+void invalidZeroDivisionException()
 {
     int a = 0, b = (1 / a); // dividimos por 0.
     if (b)
@@ -177,10 +182,9 @@ void invalidZeroDivisionException(int argSize, char *args[])
     }
 }
 
-// void chess(int argSize, char *args[]){
-//     if(argSize == 0)
-//         startGame();
-//     else
-//         if(strcmp(args[1], "-c"))
-//             startGame();
-// }
+void chess(int argSize, char *args[]){
+    if(argSize == 0)
+        startGame(NEW_GAME);
+    if(strcmp(args[0], "-c"))
+        startGame(CONTINUE_GAME);
+}

@@ -21,9 +21,9 @@ void print(char *s)
     _swrite(s, lenght, WHITE);
 }
 
-void printUser(){
-	char s[15] = "user@TP:$ ";
-	_swrite(s, 15, GREEN);
+void printWithColor(char *string, int color){
+	int len = strlen(string);
+	_swrite(string, len, color);
 }
 
 int scan(char *buffer, int size)

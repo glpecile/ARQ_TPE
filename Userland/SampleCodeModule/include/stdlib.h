@@ -26,7 +26,7 @@ void putChar(char c);
 
 void print(char *s);
 
-void printUser();
+void printWithColor(char *string, int color);
 
 int strlen(char *s);
 
