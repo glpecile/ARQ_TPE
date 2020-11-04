@@ -8,10 +8,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
-uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10, uint64_t r11)
+uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t r10)
 {
-    int sizeInfo[2] = {14,14};
-    int bgColor = 0x0;
+    // int jjj[] = {1,1};
+    // int kkk[] = {14,14};
     switch (rdi)
     {
         case 0:
@@ -19,8 +19,8 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         case 1:
             return getTime(rsi);
         case 2:
-            // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int* infoSize);
-            drawFigure((char *)rsi, rdx, rcx, r8, r9, bgColor, sizeInfo);
+            // drawFigure(char *toDraw, int color, int size, int x, int y);
+            drawFigure((char *)rsi, rdx, rcx, r8, r9);
             return 1;
         case 3:
             // uint64_t sWrite(char *buffer, int size, int color);

@@ -34,11 +34,11 @@ extern void _drawSquare(unsigned int x, unsigned int y, int l, int color);
 
 extern void _clearScreen();
 
-extern void _drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int* sizeInfo); 
+void _drawFigure(char *toDraw, int color, int size, int x, int y); 
 /**
  * Inicializa la estructura que ejecuta los programas del usuario.
 */
-void intializeShell();
+    void intializeShell();
 /**
  * Carga los camandos posibles para el usuario a traves de .
 */

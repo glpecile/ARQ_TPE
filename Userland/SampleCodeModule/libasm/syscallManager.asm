@@ -51,12 +51,12 @@ SECTION .text
 
 %macro syscall 1
 	pushState
-	mov	r10, r9 ; que se pase un vector.
-	mov	r9, r8
-	mov r8, rcx
-    mov rcx, rdx
-	mov rdx, rsi
-	mov rsi, rdi
+	mov	r10, r9 ; sexto. Se pasa otro vector en drawFigure.
+	mov	r9, r8 ; quinto. Se pasa un vector en drawFigure.
+	mov r8, rcx  ; cuarto.
+    mov rcx, rdx ; tercero.
+	mov rdx, rsi ; segundo.
+	mov rsi, rdi ; primer parametro que reciben las funciones.
 	mov rdi, %1 ; pasaje de parametro de syscall.	
     int 80h ; interrupción.
 

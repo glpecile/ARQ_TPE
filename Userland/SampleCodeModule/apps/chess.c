@@ -11,9 +11,8 @@ void startGame(int mode)
     if (mode == NEW_GAME)
     {
         _clearScreen();
-        drawBoard(0, 0);
-        int sizeInfo[2] = {PIECE_HEIGHT, PIECE_WIDTH};
-        _drawFigure(piecesBitmap(PAWN), 0, 0, 90, WHITE, BEIGE, sizeInfo);
+        drawBoard(300, 0);
+        _drawFigure(piecesBitmap(PAWN), RED, 100, 0, 0);
         while ((c = getChar()) != 'q')
         {
         }
@@ -42,8 +41,9 @@ void drawBoard(int x, int y)
     // print("a\tb\tc\td\te\tf\tg\th\n");
 }
 
-void pawn(int x0, int y0, int xf, int yf){
-    if(board[x][y+1] == free){
-        
-    }
+void pawn(int x0, int y0, int xf, int yf)
+{
+    // if(board[x][y+1] == free){
+
+    // }
 }

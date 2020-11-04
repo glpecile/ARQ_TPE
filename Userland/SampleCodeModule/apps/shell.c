@@ -17,8 +17,6 @@ void intializeShell()
     char input[MAX_INPUT];
     loadCommands();
     _setCursor(0, HEIGHT - CHAR_HEIGHT / 2);
-    // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
-    
     while (1) // !exit
     {
         printUser();
@@ -167,6 +165,7 @@ void printmem(int argSize, char *args[])
         putChar(' ');
     }
     putChar('\n');
+    return;
 }
 
 // source: https://www.felixcloutier.com/x86/ud.
