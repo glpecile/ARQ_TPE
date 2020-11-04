@@ -83,5 +83,9 @@ void enter()
 
 void tab()
 {
+    if (blink)
+    {
+        blinkCursor();
+    }
     ((x += (4 * FONT_SIZE)) < width) ? setCursor(x, y) : enter();
 }

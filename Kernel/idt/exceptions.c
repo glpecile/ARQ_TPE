@@ -46,7 +46,6 @@ void exceptionDispatcher(int exception, uint64_t *stackframe)
 		break;
 	}
 	printreg(stackframe);
-	printError("RESTARTING SHELL...");
 	returnToSnapshot(stackframe);
 }
 
@@ -72,6 +71,7 @@ void printreg(uint64_t *reg)
 	uintToBase(reg[REG_SIZE + 1], toPrint, 16); // Caso especial CS y flags.
 	print(toPrint);
 	putchar('\n', WHITE);
+	printError("RESTARTING SHELL...\n");
 }
 
 void zero_division()

@@ -8,6 +8,9 @@ GLOBAL _getTime
 GLOBAL _sGetChar
 GLOBAL _swrite
 GLOBAL _setCursor
+GLOBAL _drawFigure
+GLOBAL _drawSquare
+GLOBAL _clearScreen
 
 SECTION .text
 
@@ -48,7 +51,9 @@ SECTION .text
 
 %macro syscall 1
 	pushState
-
+	mov	r10, r9 ; que se pase un vector.
+	mov	r9, r8
+	mov r8, rcx
     mov rcx, rdx
 	mov rdx, rsi
 	mov rsi, rdi
@@ -76,3 +81,9 @@ _sGetChar:
 
 _setCursor:
 	syscall 5
+
+_drawSquare:
+	syscall 6
+
+_clearScreen:
+	syscall 7

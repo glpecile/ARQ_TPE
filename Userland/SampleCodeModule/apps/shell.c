@@ -17,6 +17,8 @@ void intializeShell()
     char input[MAX_INPUT];
     loadCommands();
     _setCursor(0, HEIGHT - CHAR_HEIGHT / 2);
+    // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
+    
     while (1) // !exit
     {
         printUser();
@@ -33,7 +35,7 @@ void loadCommands()
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess,"chess", "Chess game, play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
+    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -73,7 +75,7 @@ int processInput(char *inputBuffer)
 {
     char *args[MAX_ARGUMENTS];
     int argSize = strtok(inputBuffer, ' ', args, MAX_ARGUMENTS);
-    //verificamos la cant de args antes de compararlo con los existentes
+    // Verificamos la cant de args antes de compararlo con los existentes.
     if (argSize <= 0 || argSize > 1)
     {
         print("Invalid amount of arguments, try again.\n");
@@ -84,8 +86,7 @@ int processInput(char *inputBuffer)
         if (strcmp(args[0], commands[i].name))
         {
             commands[i].command(argSize - 1, args + 1);
-            if(strcmp("time", commands[i].name))
-                print("segui");
+            // No funciona correctamente el retorno de time.
             return 1;           
         }
     }
@@ -121,7 +122,7 @@ void inforeg(uint64_t *reg)
         "R08", "R09", "R10", "R11", "R12", "R13", "R14",
         "R15", "IP ", "RSP"};
 
-    char toPrint[20];
+    char toPrint[30];
     for (int i = 0; i < REG_SIZE; i++)
     {
         printWithColor(regs[i],YELLOW);
@@ -183,6 +184,7 @@ void invalidZeroDivisionException()
 }
 
 void chess(int argSize, char *args[]){
+    _clearScreen();
     if(argSize == 0)
         startGame(NEW_GAME);
     if(strcmp(args[0], "-c"))

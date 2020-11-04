@@ -11,8 +11,8 @@
  */
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 16
-#define WIDTH 1024 / CHAR_WIDTH
-#define HEIGHT 768 / CHAR_HEIGHT
+#define WIDTH (1024 / CHAR_WIDTH)
+#define HEIGHT (768 / CHAR_HEIGHT)
 
 #define SECONDS 0
 #define MINUTES 2
@@ -30,6 +30,11 @@ typedef struct{
 
 extern void _setCursor(int x, int y);
 
+extern void _drawSquare(unsigned int x, unsigned int y, int l, int color);
+
+extern void _clearScreen();
+
+extern void _drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int* sizeInfo); 
 /**
  * Inicializa la estructura que ejecuta los programas del usuario.
 */

@@ -29,7 +29,7 @@ void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgC
 /**
  * Dibuja una figura genérica pasada como vector de chars en las coordenadas deseadas.
  */ 
-void drawFigure(unsigned char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
+void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int* infoSize);
 void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color);
 void drawSquare(unsigned int x, unsigned int y, int l, int color);
 /**
@@ -37,5 +37,4 @@ void drawSquare(unsigned int x, unsigned int y, int l, int color);
  */
 void clearScreen();
 void clearLine();
-
 #endif

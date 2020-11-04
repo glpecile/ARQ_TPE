@@ -57,14 +57,16 @@ void drawPixel(int x, int y, int color)
 
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
-	drawFigure(charBitmap(character),x,y,fontSize,fontColor,bgColor,CHAR_HEIGHT,CHAR_WIDTH);
+	int sizeInfo[2] = {CHAR_HEIGHT, CHAR_WIDTH};
+	drawFigure((char *)charBitmap(character), x, y, fontSize, fontColor, bgColor, sizeInfo);
 }
 
-void drawFigure(unsigned char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width)
+void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int * sizeInfo)
 {
 	int aux_x = x;
 	int aux_y = y;
-
+	int height = sizeInfo[0];
+	int width = sizeInfo[1];
 	char isForeground; // Flag para definir si dibujar el fondo o no. 
 
 	for (int i = 0; i < height; i++)
@@ -129,11 +131,9 @@ void clearLine()
 
 void clearScreen()
 {
-	int width = screenData->width;
-	int height = screenData->height;
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < screenData->height; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < screenData->width; j++)
 		{
 			drawPixel(i, j, BLACK);
 		}
