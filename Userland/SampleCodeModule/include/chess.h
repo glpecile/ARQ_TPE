@@ -20,11 +20,11 @@
  *  4: Reina,
  *  5: Rey.
 */ 
-typedef struct
-{
-    int piece = -1;
-    int color = 0;
-} t_tile;
+// typedef struct
+// {
+//     int piece;
+//     int color;
+// } t_tile;
 
 
 #define NEW_GAME 0

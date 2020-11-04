@@ -61,29 +61,31 @@ void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgC
 	drawFigure((char *)charBitmap(character), x, y, fontSize, fontColor, bgColor, sizeInfo);
 }
 
-void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int * sizeInfo)
+void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int *sizeInfo)
 {
 	int aux_x = x;
 	int aux_y = y;
 	int height = sizeInfo[0];
 	int width = sizeInfo[1];
-	char isForeground; // Flag para definir si dibujar el fondo o no. 
+	char isForeground; // Flag para definir si dibujar el fondo o no.
 
 	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < width; j++)
+		if (toDraw[i] != '\n')
 		{
-			isForeground = (1 << (width - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
+			for (int j = 0; j < width; j++)
+			{
+				isForeground = (1 << (width - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
+				if (isForeground)
+					drawPixel(aux_x, aux_y, fgColor); // dibuja la parte de la figura especificada figura.
+				else
+					drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
 
-			if (isForeground)
-				drawPixel(aux_x, aux_y, fgColor); // dibuja la parte de la figura especificada figura.
-			else
-				drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
-
-			aux_x += size; // incrementa en x el tamaño.
+				aux_x += size; // incrementa en x el tamaño.
+			}
+			aux_x = x;
+			aux_y += size; // incrementa en y el tamaño.
 		}
-		aux_x = x;
-		aux_y += size; // incrementa en y el tamaño.
 	}
 }
 

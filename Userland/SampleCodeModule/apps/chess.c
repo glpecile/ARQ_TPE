@@ -3,7 +3,7 @@
 */
 #include <chess.h>
 
-t_tile board[8][8];
+// t_tile board[8][8];
 
 void startGame(int mode)
 {
@@ -11,9 +11,9 @@ void startGame(int mode)
     if (mode == NEW_GAME)
     {
         _clearScreen();
-        board(0, 0);
-        // int sizeInfo[2] = {PIECE_HEIGHT, PIECE_WIDTH};
-        // _drawFigure(piecesBitmap(PAWN), 0, 0, 50, WHITE, BLACK, sizeInfo);
+        drawBoard(0, 0);
+        int sizeInfo[2] = {PIECE_HEIGHT, PIECE_WIDTH};
+        _drawFigure(piecesBitmap(PAWN), 0, 0, 90, WHITE, BEIGE, sizeInfo);
         while ((c = getChar()) != 'q')
         {
         }
@@ -42,8 +42,8 @@ void drawBoard(int x, int y)
     // print("a\tb\tc\td\te\tf\tg\th\n");
 }
 
-void pawn(int x, int y){
-    // if(board[x][y+1] == free){
-
-    // }
+void pawn(int x0, int y0, int xf, int yf){
+    if(board[x][y+1] == free){
+        
+    }
 }
