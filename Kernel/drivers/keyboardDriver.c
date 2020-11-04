@@ -22,8 +22,7 @@ static uint64_t capsLock = 0;
 static unsigned int bsize = 0;
 static char keyBuffer[MAX_SIZE];
 
-int keyboard_handler()
-{
+int keyboard_handler(
     int scanCode;
 
     while (keyboardActivated())
