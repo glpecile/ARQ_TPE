@@ -1,5 +1,8 @@
 #include <videoDriver.h>
 
+// para testeo
+#include <stdio.h>
+
 struct vbe_mode_info_structure
 {
 	uint16_t attributes;  // deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -57,54 +60,70 @@ void drawPixel(int x, int y, int color)
 
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
-	int sizeInfo[2] = {CHAR_HEIGHT, CHAR_WIDTH};
-	drawFigure((char *)charBitmap(character), x, y, fontSize, fontColor, bgColor, sizeInfo);
-}
-
-void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int *sizeInfo)
-{
 	int aux_x = x;
 	int aux_y = y;
-	int height = sizeInfo[0];
-	int width = sizeInfo[1];
+	unsigned char *toDraw = charBitmap(character);
 	char isForeground; // Flag para definir si dibujar el fondo o no.
 
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < CHAR_HEIGHT; i++)
 	{
-		if (toDraw[i] != '\n')
+		for (int j = 0; j < CHAR_WIDTH; j++)
 		{
-			for (int j = 0; j < width; j++)
-			{
-				isForeground = (1 << (width - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
-				if (isForeground)
-					drawPixel(aux_x, aux_y, fgColor); // dibuja la parte de la figura especificada figura.
-				else
-					drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
+			isForeground = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
 
-				aux_x += size; // incrementa en x el tamaño.
-			}
+			if (isForeground)
+				drawPixel(aux_x, aux_y, fontColor); // dibuja la parte de la figura especificada figura.
+			else
+				drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
+
+			aux_x += fontSize; // incrementa en x el tamaño.
+		}
+		aux_x = x;
+		aux_y += fontSize; // incrementa en y el tamaño.
+	}
+}
+void drawFigure(char *toDraw, int color, int size, int x, int y)
+{
+	if (x > (screenData->width) && y > (screenData->height))
+	{
+		return;
+	}
+	// Guardamos el estado inicial
+	int aux_x = x;
+	int aux_y = y;
+	// recorremos toDraw
+	char c = toDraw[0];
+	for (int i = 0; c != 0 && aux_x < screenData->width && aux_y < screenData->height; c = toDraw[i++])
+	{
+		switch (c)
+		{
+		case '\n': // Proxima posición en y.
 			aux_x = x;
-			aux_y += size; // incrementa en y el tamaño.
+			aux_y += size;
+			break;
+		case '_': // No dibujo.
+			aux_x += size;
+			break;
+		case 'X': // Dibujo.
+			drawSquare(aux_x, aux_y, size, color);
+			aux_x += size;
+			break;
+		default:
+			c = 0;
+			break;
 		}
 	}
 }
 
-// ver si sirve para el ajedrez.
-void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
+void drawSquare(unsigned int x, unsigned int y, int l, int color)
 {
-	for (int i = 0; i < b; i++)
+	for (int i = 0; i < l; i++)
 	{
-		for (int j = 0; j < h; j++)
+		for (int j = 0; j < l; j++)
 		{
 			drawPixel(x + i, y + j, color);
 		}
 	}
-}
-
-// idem drawRectangle.
-void drawSquare(unsigned int x, unsigned int y, int l, int color)
-{
-	drawRectangle(x, y, l, l, color);
 }
 
 void drawCursor(int x, int y, int blink)

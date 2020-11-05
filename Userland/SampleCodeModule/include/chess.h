@@ -47,7 +47,7 @@ void drawBoard(int x, int y);
 
 void attack(t_piece fromPiece, t_piece toPiece);
 
-//Pecas
+// Pecas.
 void pawn(t_piece fromPiece, int toX, int toY);
 void tower(t_piece fromPiece, int toX, int toY);
 void bishop(t_piece fromPiece, int toX, int toY);

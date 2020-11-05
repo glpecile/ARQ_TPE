@@ -14,6 +14,7 @@ char input[MAX_INPUT];
 
 static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player);
 static void initializeBoard();
+static void drawPieces(int x, int y);
 static void fetchMovement(t_piece piece, int toX, int toY);
 
 static void deleteFigure(t_piece toPiece);
@@ -25,18 +26,18 @@ static void isEmpty(t_piece fromPiece, t_piece toPiece);
 void startGame(int mode)
 {
     _clearScreen();
-    _setCursor(0,0);
-    print("Player 1:  \t");
-    print("Player 1:  \t");
-    print("    TIME: ");
+    //_setCursor(0,0);
+    print("Player 1: \t");
+    print("Player 2: \t");
+    print("TIME: ");
+    putChar('\n');
     drawBoard(300, 0);
-    _setCursor(0, HEIGHT);
+    //_setCursor(0, HEIGHT);
     if (mode == NEW_GAME)
     {
         int quit = 1;
         initializeBoard();
-        //int sizeInfo[2] = {PIECE_HE// IGHT, PIECE_WIDTH};
-        //_drawFigure(piecesBitmap(PAWN), 0, 0, 90, WHITE, BEIGE, sizeInfo);
+        drawPieces(300, 0);
         while (quit) //c = getChar()) != 'q'
         {
             quit = readInput(input, MAX_INPUT, 'q');
@@ -51,7 +52,6 @@ void startGame(int mode)
 
 void printPlayer(int number)
 {
-
     printWithColor("Player", GREEN);
 }
 
@@ -134,7 +134,7 @@ static void initializeBoard()
     board[7][4].empty = FALSE;
     board[0][4].piece = initializePiece(0, 4, KING, WHITE, PLAYER1);
     board[7][4].piece = initializePiece(7, 4, KING, BLACK, PLAYER2);
-
+    
     //Se inicializan los espacios vacios de la matriz logica
     for (int i = 2; i < 4; i++)
     {
@@ -146,7 +146,8 @@ static void initializeBoard()
     }
 }
 
-static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player){
+static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player)
+{
     t_piece piece;
     piece.player = player;
     piece.name = name;
@@ -179,7 +180,8 @@ void movePieces(int position[4])
     fetchMovement(space.piece, toX, toY);
 }
 
-static void fetchMovement(t_piece piece, int toX, int toY){
+static void fetchMovement(t_piece piece, int toX, int toY)
+{
     switch (piece.name)
     {
     case PAWN:
@@ -230,6 +232,24 @@ void drawBoard(int x, int y)
     // print("h\n");
 }
 
+static void drawPieces(int x, int y)
+{
+    //extern void _drawFigure(char *toDraw, int color, int size, int x, int y);
+    int piece, color;
+    for (int i = 0; i < 8; i++) //WIDTH_T / PIECE_WIDTH
+    {
+        for (int j = 0; j < 8; j++) //HEIGHT_T / PIECE_HEIGHT
+        {
+            if (board[i][j].empty == FALSE)
+            {
+                piece = board[i][j].piece.name;
+                color = board[i][j].piece.color;
+                _drawFigure(piecesBitmap(piece), color, 5, x + j * TILE, y + i * TILE);
+            }
+        }
+    }
+}
+
 //************* MOVIMIENTOS ***********//
 void attack(t_piece fromPiece, t_piece toPiece)
 {
@@ -245,7 +265,8 @@ void attack(t_piece fromPiece, t_piece toPiece)
     }
 }
 
-static void deleteFigure(t_piece toPiece){
+static void deleteFigure(t_piece toPiece)
+{
     //_drawFigure(piecesBitmap(toPiece.name), 0, 0, 90, toPiece.color, toPiece.color, sizeInfo);
 }
 
@@ -261,18 +282,19 @@ static void move(t_piece piece, int toX, int toY)
     piece.posY = toY;
     board[toX][toY].piece = piece;
     board[toX][toY].empty = FALSE;
-    
 }
-static void isEmpty(t_piece fromPiece, t_piece toPiece){
-    int fromX =fromPiece.posX, fromY = fromPiece.posY;
-    int toX =toPiece.posX, toY = toPiece.posY;
+static void isEmpty(t_piece fromPiece, t_piece toPiece)
+{
+    int fromX = fromPiece.posX, fromY = fromPiece.posY;
+    int toX = toPiece.posX, toY = toPiece.posY;
 
-    for(int i = fromX; i <= toX; i++){
+    for (int i = fromX; i <= toX; i++)
+    {
         for (int j = fromY; j <= toY; j++)
         {
-            if(board[i][j].empty != TRUE)
+            if (board[i][j].empty != TRUE)
                 return;
-        } 
+        }
     }
 
     move(fromPiece, toX, toY);
@@ -289,7 +311,7 @@ static void isEmpty(t_piece fromPiece, t_piece toPiece){
 //     int fromQX = queen.posX, fromQY = queen.posY;
 
 //     t_tile toTTile, toQTile;
-        
+
 //     if(long == 2){//enroque corto
 //         toTTile= getTile(fromT2X +2, fromT2Y);
 //         if(toTTile.empty != FALSE)
@@ -300,7 +322,7 @@ static void isEmpty(t_piece fromPiece, t_piece toPiece){
 //         if(toTTile.empty != FALSE)
 //             move(tower1, fromT2X +3, fromT1Y);
 //     }
-    
+
 //     toQTile = getTile(fromQX -2, fromQY);
 //     if(toQTile.empty != FALSE)
 //         move(queen, fromQX -2, fromQY);
@@ -366,8 +388,10 @@ void pawn(t_piece fromPiece, int toX, int toY)
             print("Invalid move.");
             return;
         }
-        else{
-            if(toY == fromY +2 && fromPiece.moved != FALSE){
+        else
+        {
+            if (toY == fromY + 2 && fromPiece.moved != FALSE)
+            {
                 print("Invalid move.");
                 return;
             }
@@ -376,58 +400,62 @@ void pawn(t_piece fromPiece, int toX, int toY)
     if (toY == FINAL_ROW || toY == FIRST_ROW)
     {
         //llegar al final del tablero, puedo "cambiar" de  pieza
-
     }
 }
 
 void tower(t_piece fromPiece, int toX, int toY)
 {
-    int fromX =fromPiece.posX;
+    int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
-    if (fromX!= toX || fromY != toY)
+    if (fromX != toX || fromY != toY)
     {
         print("Invalid move.");
         return;
-    }    
+    }
     t_tile toTile = getTile(toX, toY);
-    if(toTile.empty != FALSE)
+    if (toTile.empty != FALSE)
         attack(fromPiece, toTile.piece);
 }
 
-
-void bishop(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
+void bishop(t_piece fromPiece, int toX, int toY)
+{
+    int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
-    if((toX - fromX != toY - fromY) || (fromX - toX != fromY - toY)){
+    if ((toX - fromX != toY - fromY) || (fromX - toX != fromY - toY))
+    {
         print("Invalid move.");
         return;
     }
     t_tile toTile = getTile(toX, toY);
-    if(toTile.empty != FALSE)
+    if (toTile.empty != FALSE)
         attack(fromPiece, toTile.piece);
 }
 
-void king(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
+void king(t_piece fromPiece, int toX, int toY)
+{
+    int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
-    if(((toX != fromX +1) || (toX != fromX -1)) && ((toY != fromY +1) || (toY != fromY -1))) {
+    if (((toX != fromX + 1) || (toX != fromX - 1)) && ((toY != fromY + 1) || (toY != fromY - 1)))
+    {
         print("Invalid move.");
         return;
     }
     t_tile toTile = getTile(toX, toY);
-    if(toTile.empty != FALSE)
+    if (toTile.empty != FALSE)
         attack(fromPiece, toTile.piece);
 }
 
-void horse(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
+void horse(t_piece fromPiece, int toX, int toY)
+{
+    int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
-    if( (((toX != fromX +2) || (toX != fromX -2)) && ((toY != fromY +1) || (toY != fromY -1))) ||
-        (((toX != fromX +1) || (toX != fromX -1)) && ((toY != fromY +2) || (toY != fromY -2))) ){
-            print("Invalid move.");
-            return;
-        }
+    if ((((toX != fromX + 2) || (toX != fromX - 2)) && ((toY != fromY + 1) || (toY != fromY - 1))) ||
+        (((toX != fromX + 1) || (toX != fromX - 1)) && ((toY != fromY + 2) || (toY != fromY - 2))))
+    {
+        print("Invalid move.");
+        return;
+    }
     t_tile toTile = getTile(toX, toY);
-    if(toTile.empty != FALSE)
+    if (toTile.empty != FALSE)
         attack(fromPiece, toTile.piece);
 }
