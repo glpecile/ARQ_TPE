@@ -55,7 +55,7 @@ int processInput(char *inputBuffer);
 void printUser();
 void help();
 void inforeg(uint64_t *reg);
-void printCurrentTime();
+//void printCurrentTime();
 void printmem();
 void invalidOpCodeException();
 void invalidZeroDivisionException();

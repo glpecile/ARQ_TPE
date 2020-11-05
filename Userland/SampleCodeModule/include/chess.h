@@ -18,7 +18,7 @@
 #define PLAYER2 2
 
 /**
- *  -1: No ocupado, 0: Peon, 1: Torre, 2: Caballo, 3: Alfil, 4: Reina, 5: Rey.
+ *  typePiece: 0: Peon, 1: Torre, 2: Caballo, 3: Alfil, 4: Reina, 5: Rey.
 */
 
 typedef struct

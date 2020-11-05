@@ -32,7 +32,7 @@ void loadCommands()
 {
     loadCommand(&inforeg, "inforeg", "Displays all the information regarding the registers.\n");
     loadCommand(&help, "help", "Displays the description of all functions available.\n");
-    loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
+    //loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
@@ -136,27 +136,27 @@ void inforeg(uint64_t *reg)
     }
 }
 // void numToStr(int num, char *string, int len)
-void printCurrentTime()
-{
-    char toPrint[2];
-    char year[4];
+// void printCurrentTime()
+// {
+//     char toPrint[2];
+//     char year[4];
 
-    numToStr(_getTime(HOURS), toPrint, 2);
-    print(toPrint);
-    print(":");
-    numToStr(_getTime(MINUTES), toPrint, 2);
-    print(toPrint);
-    print(", ");
-    numToStr(_getTime(DAY_OF_THE_MONTH), toPrint, 2);
-    print(toPrint);
-    print("/");
-    numToStr(_getTime(MONTH), toPrint, 2);
-    print(toPrint);
-    print("/");  
-    numToStr(_getTime(YEAR) + 2000, year, 4);
-    print(year);
-    putChar('\n');
-}
+//     numToStr(_getTime(HOURS), toPrint, 2);
+//     print(toPrint);
+//     print(":");
+//     numToStr(_getTime(MINUTES), toPrint, 2);
+//     print(toPrint);
+//     print(", ");
+//     numToStr(_getTime(DAY_OF_THE_MONTH), toPrint, 2);
+//     print(toPrint);
+//     print("/");
+//     numToStr(_getTime(MONTH), toPrint, 2);
+//     print(toPrint);
+//     print("/");  
+//     numToStr(_getTime(YEAR) + 2000, year, 4);
+//     print(year);
+//     putChar('\n');
+// }
 
 void printmem(int argSize, char *args[])
 {
