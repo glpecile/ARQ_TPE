@@ -59,7 +59,8 @@ char keyToAscii(int scancode)
 
 char sGetChar()
 {
-    if (bsize<=0) {
+    if (bsize <= 0)
+    {
         return 0;
     }
     char key = keyBuffer[0];

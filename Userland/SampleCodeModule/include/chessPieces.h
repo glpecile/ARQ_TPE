@@ -1,6 +1,6 @@
 /**
  * chessPieces.h: Contrato para imprimir piezas de ajedrez.
- */ 
+ */
 #ifndef __chessPieces_H_
 #define __chessPieces_H_
 #define PIECE_HEIGHT 14
@@ -15,7 +15,10 @@ typedef enum
     QUEEN = 4,
     KING = 5
 } typePieces;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21ad48a1a907377b4c69eff850226edc2ada7048
 /**
  * Matriz de chars para imprimir las piezas.
 // 0: Peon.

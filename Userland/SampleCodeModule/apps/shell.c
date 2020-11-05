@@ -17,13 +17,18 @@ void intializeShell()
     //int exit = 0;
     char input[MAX_INPUT];
     loadCommands();
+    int exit = 1;
     _setCursor(0, HEIGHT - CHAR_HEIGHT / 2);
     // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
-    
-    while (1) // !exit
+
+    while (exit) // !exit
     {
         printUser();
+<<<<<<< HEAD
         readInput(input, MAX_INPUT, ESC);    
+=======
+        exit = readInput(input, MAX_INPUT, ESC);
+>>>>>>> 21ad48a1a907377b4c69eff850226edc2ada7048
         processInput(input);
     }
 }
@@ -36,8 +41,13 @@ void loadCommands()
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
+<<<<<<< HEAD
     loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
     loadCommand(&_clearScreen, "clear", "Clears the whole screen.");
+=======
+    loadCommand(&chess, "chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
+    loadCommand(&_clearScreen, "clear", "Clears the entire screen. \n");
+>>>>>>> 21ad48a1a907377b4c69eff850226edc2ada7048
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -52,7 +62,11 @@ int readInput(char *inputBuffer, int maxSize, char token)
 {
     int size = 0;
     uint64_t c;
+<<<<<<< HEAD
     while (size < (maxSize - 1) && (c = getChar()) != '\n' && c != token)
+=======
+    while (size < (maxSize - 1) && (c = getChar()) != '\n' && (c != token))
+>>>>>>> 21ad48a1a907377b4c69eff850226edc2ada7048
     {
         if (c) // Verificamos que se presiona una letra.
         {
@@ -68,10 +82,15 @@ int readInput(char *inputBuffer, int maxSize, char token)
             }
         }
     }
+
     // Ponemos la marca de final al string.
     inputBuffer[size++] = 0;
     putChar('\n');
+<<<<<<< HEAD
     return c != token;
+=======
+    return c == token;
+>>>>>>> 21ad48a1a907377b4c69eff850226edc2ada7048
 }
 
 int processInput(char *inputBuffer)
@@ -90,7 +109,7 @@ int processInput(char *inputBuffer)
         {
             commands[i].command(argSize - 1, args + 1);
             // No funciona correctamente el retorno de time.
-            return 1;           
+            return 1;
         }
     }
     print("Invalid command, try again.\n");
@@ -102,8 +121,9 @@ int processInput(char *inputBuffer)
  * COMANDOS 
  ************************************
 */
-void printUser(){
-	char s[] = "Clifford@TPE_ARQ:$ ";
+void printUser()
+{
+    char s[] = "user@TPE_ARQ:$ ";
     printWithColor(s, LIGHT_BLUE);
 }
 
@@ -128,7 +148,7 @@ void inforeg(uint64_t *reg)
     char toPrint[30];
     for (int i = 0; i < REG_SIZE; i++)
     {
-        printWithColor(regs[i],YELLOW);
+        printWithColor(regs[i], YELLOW);
         uintToBase(reg[i], toPrint, 16);
         print(":");
         print(toPrint);
@@ -152,10 +172,11 @@ void printCurrentTime()
     print("/");
     numToStr(_getTime(MONTH), toPrint, 2);
     print(toPrint);
-    print("/");  
+    print("/");
     numToStr(_getTime(YEAR) + 2000, year, 4);
     print(year);
     putChar('\n');
+    return;
 }
 
 void printmem(int argSize, char *args[])
@@ -186,10 +207,11 @@ void invalidZeroDivisionException()
     }
 }
 
-void chess(int argSize, char *args[]){
+void chess(int argSize, char *args[])
+{
     _clearScreen();
-    if(argSize == 0)
+    if (argSize == 0)
         startGame(NEW_GAME);
-    if(strcmp(args[0], "-c"))
+    if (strcmp(args[0], "-c"))
         startGame(CONTINUE_GAME);
 }
