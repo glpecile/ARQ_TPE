@@ -182,3 +182,7 @@ uint64_t hexaToInt(char * s){
 //             }
 //     }
 // }
+
+void getTime(int timeType, char * buffer, int size){
+	numToStr(_getTime(timeType), buffer, size);
+}

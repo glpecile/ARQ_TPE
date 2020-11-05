@@ -12,7 +12,7 @@ void startGame(int mode)
     {
         _clearScreen();
         drawBoard(300, 0);
-        _drawFigure(piecesBitmap(PAWN), RED, 100, 0, 0);
+        _drawFigure(piecesBitmap(PAWN), BLACK, 5, 300, 0+TILE);
         while ((c = getChar()) != 'q')
         {
         }

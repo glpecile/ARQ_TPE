@@ -20,9 +20,11 @@ void intializeShell()
     while (1) // !exit
     {
         printUser();
-        readInput(input, MAX_INPUT);    
+        readInput(input, MAX_INPUT);
         processInput(input);
+        // print("Se volvio al while.");
     }
+    // print("Sali del while.");
 }
 
 void loadCommands()
@@ -33,7 +35,7 @@ void loadCommands()
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
+    loadCommand(&chess, "chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -84,8 +86,9 @@ int processInput(char *inputBuffer)
         if (strcmp(args[0], commands[i].name))
         {
             commands[i].command(argSize - 1, args + 1);
+            // print("Se volvio.");
             // No funciona correctamente el retorno de time.
-            return 1;           
+            return 1;
         }
     }
     print("Invalid command, try again.\n");
@@ -97,8 +100,9 @@ int processInput(char *inputBuffer)
  * COMANDOS 
  ************************************
 */
-void printUser(){
-	char s[] = "Clifford@TPE_ARQ:$ ";
+void printUser()
+{
+    char s[] = "User@TPE_ARQ:$ ";
     printWithColor(s, LIGHT_BLUE);
 }
 
@@ -123,7 +127,7 @@ void inforeg(uint64_t *reg)
     char toPrint[30];
     for (int i = 0; i < REG_SIZE; i++)
     {
-        printWithColor(regs[i],YELLOW);
+        printWithColor(regs[i], YELLOW);
         uintToBase(reg[i], toPrint, 16);
         print(":");
         print(toPrint);
@@ -147,7 +151,7 @@ void printCurrentTime()
     print("/");
     numToStr(_getTime(MONTH), toPrint, 2);
     print(toPrint);
-    print("/");  
+    print("/");
     numToStr(_getTime(YEAR) + 2000, year, 4);
     print(year);
     putChar('\n');
@@ -176,16 +180,17 @@ void invalidOpCodeException()
 
 void invalidZeroDivisionException()
 {
-    int a = 0, b = (1 / a); // dividimos por 0.
+    int a = 0, b = 1/a;
     if (b)
     {
     }
 }
 
-void chess(int argSize, char *args[]){
+void chess(int argSize, char *args[])
+{
     _clearScreen();
-    if(argSize == 0)
+    if (argSize == 0)
         startGame(NEW_GAME);
-    if(strcmp(args[0], "-c"))
+    if (strcmp(args[0], "-c"))
         startGame(CONTINUE_GAME);
 }

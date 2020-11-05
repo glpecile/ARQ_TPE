@@ -20,6 +20,8 @@ extern uint64_t _sGetChar();
 */
 extern uint64_t _getTime(int desc);
 
+void getTime(int timeType, char *buffer, int size);
+
 uint64_t getChar();
 
 void putChar(char c);
@@ -44,7 +46,7 @@ void printBase(uint64_t value, uint32_t base);
 
 int pow(int base, unsigned int exp);
 
-uint64_t hexaToInt(char * s);
+uint64_t hexaToInt(char *s);
 
 void numToStr(int num, char *string, int len);
 
