@@ -48,7 +48,7 @@ void loadCommands();
 */
 void loadCommand(void (*fn)(), char *name, char *desc);
 
-int readInput(char * inputBuffer, int maxSize);
+int readInput(char * inputBuffer, int maxSize, char token);
 int processInput(char *inputBuffer);
 
 /****************** COMANDOS ******************/

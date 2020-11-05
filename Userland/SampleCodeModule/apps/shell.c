@@ -38,6 +38,7 @@ void loadCommands()
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
     loadCommand(&chess, "chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
+    loadCommand(&_clearScreen, "clear", "Clears the entire screen. \n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -105,7 +106,7 @@ int processInput(char *inputBuffer)
 */
 void printUser()
 {
-    char s[] = "Clifford@TPE_ARQ:$ ";
+    char s[] = "user@TPE_ARQ:$ ";
     printWithColor(s, LIGHT_BLUE);
 }
 
@@ -158,6 +159,7 @@ void printCurrentTime()
     numToStr(_getTime(YEAR) + 2000, year, 4);
     print(year);
     putChar('\n');
+    return;
 }
 
 void printmem(int argSize, char *args[])

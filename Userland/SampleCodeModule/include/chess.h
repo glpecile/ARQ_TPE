@@ -20,23 +20,44 @@
  *  4: Reina,
  *  5: Rey.
 */
+
 typedef struct
 {
     int player;
-    int name;
+    typePieces name;
     int color;
-    int state;
+    int state; //si esta vivo es 0, sino 1
     int posX;
     int posY;
+    int moved; //si aun no se movio, esta en 0
     //int (*fn)(int fromX, int fromY, int toX, int toY);
 } t_piece;
+
+typedef struct
+{
+    int posX;
+    int posY;
+    t_piece piece;
+    int empty; //si esta vacio es 0
+} t_tile;
 
 #define NEW_GAME 0
 #define CONTINUE_GAME 1
 #define TILE 90
 
 void startGame(int mode);
-int processGame(char *inputBuffer);
+int proccessGame(char *inputBuffer);
 void movePieces(int position[4]);
 void drawBoard(int x, int y);
+
+void comer(t_piece fromPiece, t_piece toPiece);
+void move(t_piece * piece, int toX, int toY);
+
+//Pecas
+// void pawn(t_piece fromPiece, int toX, int toY);
+ void tower(t_piece fromPiece, int toX, int toY);
+// void bishop(t_piece fromPiece, int toX, int toY);
+// void king(t_piece fromPiece, int toX, int toY);
+// void horse(t_piece fromPiece, int toX, int toY);
+
 #endif

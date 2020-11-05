@@ -3,24 +3,29 @@
 */
 #include <chess.h>
 #define MAX_INPUT 5
-static t_piece* board[8][8];
+#define MAX_ARGUMENTS 3
+
+static t_tile board[8][8];
+
+static t_piece getPiece(int x, int y);
+
+static void initializePiece(t_piece piece, int player, typePieces name, int color, int posX, int posY);
+static void initializeTile(t_tile tile, int posX, int posY, t_piece piece);
 
 void startGame(int mode)
 {
-    int c;
+    drawBoard(300, 0);
     if (mode == NEW_GAME)
     {
         _clearScreen();
-        drawBoard(300, 0);
         char input[MAX_INPUT];
         int quit = 1;
-        //int sizeInfo[2] = {PIECE_HEIGHT, PIECE_WIDTH};
+        //int sizeInfo[2] = {PIECE_HE// IGHT, PIECE_WIDTH};
         //_drawFigure(piecesBitmap(PAWN), 0, 0, 90, WHITE, BEIGE, sizeInfo);
         while (quit) //c = getChar()) != 'q'
         {
-            printPlayer();
             quit = readInput(input, MAX_INPUT, 'q');
-            proccessGame();
+            proccessGame(input);
         }
         _clearScreen();
     }
@@ -51,10 +56,10 @@ int processGame(char *inputBuffer)
         //A1 A2
         int letter = args[i][0];
         int num = args[i][1];
-        int flag = letter >= 'A' && letter <= 'H' && num >= '0' && num <= '7'; 
+        int flag = letter >= 'A' && letter <= 'H' && num >= '0' && num <= '7';
         if (!flag)
         {
-            print('Invalid input, please use the correct notation. :)');
+            print("Invalid input, please use the correct notation.");
             return 0;
         }
         position[i] = letter;
@@ -66,23 +71,41 @@ int processGame(char *inputBuffer)
     return 1;
 }
 
-void movePieces(int position[4])
+static void initializePiece(t_piece piece, int player, typePieces name, int color, int pose){int posY
+    pipiece.player = player;
+    piece.name = name;
+    piece.color = color;
+    ece.state = 0;
+ 
+    piece.posX = posX;
+    piece.posY = posY;  
+    piece.moved  =0;
+
+static void initializeTile(t_tile tile, int posX, int posY, t_piece piece){
+    tile.posX = posX;
+    tile.posY = posY;
+    tile.piece = piece;
+    tile.empty = 0;
+}
+
+vePiecovesi(int position[4])
 {
     int fromX = position[0];
     int fromY = position[1];
     int toX = position[2];
     int toY = position[3];
-    t_piece move = board[fromX][fromY];
-    if (move == null)
+    t_tile space = board[fromX][fromY];
+    if (space.empty == 0)
     {
         print("No piece to access. Please move an actual piece");
         return;
     }
-    if(fromX == toX && fromY == toY){
+    if (fromX == toX && fromY == toY)
+    {
         print("Invalid move");
         return;
-    }    
-    move.fn(fromX, fromY, toX, toY);
+    }
+    //move.fn(fromX, fromY, toX, toY);
 }
 
 void drawBoard(int x, int y)
@@ -103,87 +126,142 @@ void drawBoard(int x, int y)
     //print("a\tb\tc\td\te\tf\tg\th\n");
 }
 
-//************* PIEZAS ***********//
-
-void pawn(t_piece fromPiece, int toX, int toY)
+//************* MOVIMIENTOS ***********//
+void comer(t_piece fromPiece, t_piece toPiece)
 {
-    int fromY = fromPiece.posY;
-    int fromX = fromPiece.posX;
-    if (fromY >= toY)
+    if (toPiece != null && fromPiece.player != toPiece.player)
+    {
+        //deleteFigure(toPiece);
+        move(fromPiece, toPiece.posX, toPiece.toY);
+    }
+    else
     {
         print("Invalid move.");
         return;
     }
-    t_piece toPiece = getPiece(toX,toY);
-    if(fromX != toX){
-        if(toX != fromX +1 || toX != fromX - 1){
-            print("Invalid move. You can only move once in diagonal.");
-            return;
-        }
-        else{
-            if (fromPiece != null && fromPiece.player != toPiece.player){//hay una pieza en diagonal y es enemiga. En caso contrario no puedo moverme
-                deleteFigure(toPiece);
-                move(fromPiece, toX, toY);
-            }
-            else
-            {
-                print("Illegal move for pawn.");
-                return;
-            }
-            }
-    }else{
-        //chequeo que no haya una pieza por delante, si no la hay me muevo.
-        if(toPiece == null){
-            move(fromPiece, toX, toY);
-        }
-    }
-    if(toY == HEIGTH_T -1){
-        //llegar al final del tablero, puedo "cambiar" de pieza
-        
-    }
 }
 
-void tower(t_piece fromPiece, int toX, int toY){
-    if( fromX != toX || fromY != toY){
-        print("Invalid move.");
-        return;
-    }
-}
-
-void bishop(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
-    int fromY = fromPiece.posY;
-    if((toX - fromX != toY - fromY) || (fromX - toX != fromY - toY)){
-        print("Invalid move.");
-        return;
-    }
-}
-
-void king(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
-    int fromY = fromPiece.posY;
-    if(((toX != fromX +1) || (toX != fromX -1)) && ((toY != fromY +1) || (toY != fromY -1))) {
-        print("Invalid move.");
-        return;
-    }
-}
-
-void horse(t_piece fromPiece, int toX, int toY){
-    int fromX =fromPiece.posX;
-    int fromY = fromPiece.posY;
-    if(((toX != fromX +2) || (toX != fromX -2)) && ((toY != from +1) || (toY != from -1)) 
-        ((toX != fromX +1) || (toX != fromX -1)) && ((toY != from +2) || (toY != from -2))){
-            print("Invalid move.");
-            return;
-    }
-}
-t_piece getPiece(int x, int y){
-    t_piece* toReturn = board[x][y];
+static t_piece getPiece(int x, int y)
+{
+    t_piece *toReturn = board[x][y];
     return *toReturn;
 }
-void move(t_piece * piece, int toX, int toY){
+
+void move(struct t_piece piece, int toX, int toY)
+{
     piece->posX = toX;
     piece->posY = toY;
     board[toX][toY] = &piece;
     board[piece->posX][piece->posY] = null;
 }
+
+//************* PIEZAS ***********//
+
+
+// void pawn(t_piece fromPiece, int toX, int toY)
+// {
+//     int fromY = fromPiece.posY;
+//     int fromX = fromPiece.posX;
+//     if (fromY >= toY)
+//     {
+//         print("Invalid move.");
+//         return;
+//     }
+//     if (fromX != toX)
+//     {
+//         if (toX != fromX + 1 || toX != fromX - 1)
+//         {
+//             print("Invalid move. You can only move once in diagonal.");
+//             return;
+//         }
+//         else
+//         {
+//             if (toX == fromX + 1)
+//             {
+//                 t_piece toPiece = getPiece(toX + 1, toY);
+//                 if (toPiece != null)
+//                 {
+//                     comer(fromPiece, toPiece);
+//                 }
+//                 //vereficamos si podemos hacer captura al paso
+//                 else
+//                 {
+//                     t_piece toPiece = getPiece(toX + 1, toY - 1);
+//                     if (toPiece != null)
+//                         comer(fromPiece, toPiece);
+//                 }
+//             }
+//             if (toX == fromX - 1)
+//             {
+//                 t_piece toPiece = getPiece(toX - 11, toY);
+//                 if (toPiece != null)
+//                 {
+//                     comer(fromPiece, toPiece);
+//                 }
+//                 //vereficamos si podemos hacer captura al paso
+//                 else
+//                 {
+//                     t_piece toPiece = getPiece(toX - 1, toY - 1);
+//                     if (toPiece != null)
+//                         comer(fromPiece, toPiece);
+//                 }
+//             }
+//         }
+//     }
+//     else
+//     {
+//         if ((toY != fromY + 1) || (toY != fromY + 2))
+//         {
+//             print("Invalid move.");
+//             return;
+//         }
+//         //chequeo que no haya una pieza por delante, si no la hay me muevo.
+//         t_piece toPiece = getPiece(toX, toY);
+//         if (toPiece == null)
+//         {
+//             move(fromPiece, toX, toY);
+//         }
+//     }
+//     if (toY == HEIGHT_T - 1)
+//     {
+//         //llegar al final del tablero, puedo "cambiar" de  pieza
+//     }
+// }
+
+void tower(t_piece piece, int toX, int toY)
+{
+    if (piece.posX != toX || piece.posY != toY)
+    {
+        print("Invalid move.");
+        return;
+    }    
+}
+
+
+// void bishop(t_piece fromPiece, int toX, int toY){
+//     int fromX =fromPiece.posX;
+//     int fromY = fromPiece.posY;
+//     if((toX - fromX != toY - fromY) || (fromX - toX != fromY - toY)){
+//         print("Invalid move.");
+//         return;
+//     }
+// }
+
+// void king(t_piece fromPiece, int toX, int toY){
+//     int fromX =fromPiece.posX;
+//     int fromY = fromPiece.posY;
+//     if(((toX != fromX +1) || (toX != fromX -1)) && ((toY != fromY +1) || (toY != fromY -1))) {
+//         print("Invalid move.");
+//         return;
+//     }
+// }
+
+// void horse(t_piece fromPiece, int toX, int toY){
+//     int fromX =fromPiece.posX;
+//     int fromY = fromPiece.posY;
+//     if(((toX != fromX +2) || (toX != fromX -2)) && ((toY != from +1) || (toY != from -1)) 
+//         ((toX != fromX +1) || (toX != fromX -1)) && ((toY != from +2) || (toY != from -2))){
+//             print("Invalid move.");
+//             return;
+//         }
+// }

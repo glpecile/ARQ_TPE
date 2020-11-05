@@ -35,3 +35,17 @@ exit
 cd root
 make all
 exit
+make clean
+cd root
+make clean
+make all
+make all
+make all
+make all
+exit
+make clean
+cd rooot
+cd root
+make clean
+make all
+exit
