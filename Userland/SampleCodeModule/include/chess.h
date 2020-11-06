@@ -47,7 +47,7 @@ void validMovePieces(int position[4]);
 void drawBoard(int x, int y);
 
 int attack(t_piece fromPiece, t_piece toPiece);
-//void enroque(t_piece tower, t_piece king, int lon);
+void enroque(int lon);
 void coronation(t_piece fromPiece, typePieces toName, int toX, int toY);
 
 // Pecas.
@@ -55,6 +55,7 @@ int pawn(t_piece fromPiece, int toX, int toY);
 int tower(t_piece fromPiece, int toX, int toY);
 int bishop(t_piece fromPiece, int toX, int toY);
 int king(t_piece fromPiece, int toX, int toY);
+int queen(t_piece fromPiece, int toX, int toY);
 int horse(t_piece fromPiece, int toX, int toY);
 
 #endif

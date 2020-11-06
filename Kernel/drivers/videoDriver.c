@@ -152,11 +152,11 @@ void clearLine()
 
 void clearScreen()
 {
-	for (int i = 0; i < screenData->height; i++)
+	for (int y = 0; y < screenData->height; y++)
 	{
-		for (int j = 0; j < screenData->width; j++)
+		for (int x = 0; x < screenData->width; x++)
 		{
-			drawPixel(i, j, BLACK);
+			drawPixel(x, y, BLACK);
 		}
 	}
 }
