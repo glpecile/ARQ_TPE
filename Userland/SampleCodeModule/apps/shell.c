@@ -36,7 +36,7 @@ void loadCommands()
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\n");
+    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\nType -man to instructions");
     loadCommand(&_clearScreen, "clear", "Clears the whole screen.");
 }
 
@@ -192,4 +192,7 @@ void chess(int argSize, char *args[]){
         startGame(NEW_GAME);
     if(strcmp(args[0], "-c"))
         startGame(CONTINUE_GAME);
+    if(strcmp(args[0], "-man"))
+        print("Comandos para jugar al ajedrez.\nmover: FROMXFROMY TOXTOY ,los movs son en mayuscula de origen a destino.\nenroque: e 2|3 \nen coronacion: ingresar nombre de pieza\n");
 }
+

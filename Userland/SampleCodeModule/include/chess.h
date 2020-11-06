@@ -41,17 +41,20 @@ typedef struct
 
 
 void startGame(int mode);
+void printPlayer(int number);
 int processGame(char *inputBuffer);
-void movePieces(int position[4]);
+void validMovePieces(int position[4]);
 void drawBoard(int x, int y);
 
-void attack(t_piece fromPiece, t_piece toPiece);
+int attack(t_piece fromPiece, t_piece toPiece);
+//void enroque(t_piece tower, t_piece king, int lon);
+void coronation(t_piece fromPiece, typePieces toName, int toX, int toY);
 
 // Pecas.
-void pawn(t_piece fromPiece, int toX, int toY);
-void tower(t_piece fromPiece, int toX, int toY);
-void bishop(t_piece fromPiece, int toX, int toY);
-void king(t_piece fromPiece, int toX, int toY);
-void horse(t_piece fromPiece, int toX, int toY);
+int pawn(t_piece fromPiece, int toX, int toY);
+int tower(t_piece fromPiece, int toX, int toY);
+int bishop(t_piece fromPiece, int toX, int toY);
+int king(t_piece fromPiece, int toX, int toY);
+int horse(t_piece fromPiece, int toX, int toY);
 
 #endif
