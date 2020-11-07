@@ -49,3 +49,10 @@ cd root
 make clean
 make all
 exit
+cd root
+ls
+cd Toolchain/
+make all
+cd ..
+make all
+exit

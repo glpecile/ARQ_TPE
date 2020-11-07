@@ -16,6 +16,9 @@ char input[MAX_INPUT];
 char *piecesCoronation[4]= { "queen", "tower", "bishop", "horse"};
 static typePieces toCoronation = 6;
 
+
+int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1;
+
 static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player);
 static void initializeBoard();
 static void drawPieces(int x, int y);
@@ -27,38 +30,57 @@ static void move(t_piece piece, int toX, int toY);
 static int isEmptyP(int fromX, int fromY, int toX, int toY);
 static int isEmptyN(int fromX, int fromY, int toX, int toY);
 
+void game();
+int readPlayerInput(char *inputBuffer, int maxSize, char token);
+void startTimer(int player);
+void endTimer();
+void activeTimer();
+
 void startGame(int mode)
 {
     _clearScreen();
-    //_setCursor(0,10);
-    // print("Player 1: \t");
-    // print("Player 2: \t");
-    // print("TIME: ");
     drawBoard(300, 0);
-    //_setCursor(0, HEIGHT);
 
     if (mode == NEW_GAME)
-    {
-        int quit = 1;
+    {   
+        initializeCursor();
         initializeBoard();
         drawPieces(300, 0);
-        while (quit) //c = getChar()) != 'q'
-        {
-            printPlayer(1);
-            quit = readInput(input, MAX_INPUT, ESC);
-            processGame(input);
-        }
-        _clearScreen();
+        currentPlayer = PLAYER1;
+        startTimer(currentPlayer);
+        // Cambiar.
+        printPlayer(currentPlayer, LAST_LINE);
+        game();
     }
     if (mode == CONTINUE_GAME)
         print("continue");
     putChar('\n');
 }
+void game() {
+    int quit = 0;
+    while (quit == 0) //c = getChar()) != 'q'
+        {
+            quit = readPlayerInput(input, MAX_INPUT, 'q');
+            // 1 si se movio la pieza 0 si no. -1 cuando se termino el tiempo del jugador o murio el rey del otro jugador.
+            // if (processGame(input))
+            // {
+            //     (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
+            //     startTimer(currentPlayer);
+            // }
+            
+        }
+        _clearScreen();
+        if (quit == -1)
+        {
+            (currentPlayer == PLAYER1) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
+        }
+        if(quit == 3){
+            //Se mato al rey enemigo.
+            (currentPlayer == PLAYER2) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
+        }
 
-void printPlayer(int number)
-{
-    printWithColor("Player", GREEN);
 }
+
 
 int processGame(char *inputBuffer)
 {
@@ -79,9 +101,9 @@ int processGame(char *inputBuffer)
         int flag = letter >= 'A' && letter <= 'H' && num >= '1' && num <= '8';
         if (!flag)
         {
-            if(letter == 'E'){//verificamos si entro un e y long, para hacer enroque
-                num = args[i+1][0];                
-                enroque(2);
+            if(letter == 'e' && (num == '2' || num == '3')){//verificamos si entro un e y long, para hacer enroque
+                num = num - '0' - 1;
+                enroque(num);
                 return 1;
             }
             for (int j = 0; j < 4; j++)
@@ -154,6 +176,89 @@ static int fetchMovement(t_piece piece, int toX, int toY)
     }
     return !flag;   
 }
+
+void startTimer(int player)
+{
+    (player == PLAYER1) ? (timer_player1 = 0) : (timer_player2 = 0);
+    // syscall.
+    _timerFunc(&activeTimer, TRUE);
+}
+
+void endTimer()
+{
+    timer_player1 = 0;
+    timer_player2 = 0;
+    _timerFunc(&activeTimer, FALSE);
+}
+
+// Funcion pasada por parametro encargada de actualizar los contadores de tiempo.
+void activeTimer()
+{
+    if (currentPlayer == PLAYER1)
+    {
+        timer_player1++;
+    }
+    else if (currentPlayer == PLAYER2)
+    {
+        timer_player2++;
+    }
+}
+// Funcion nueva que lee input del teclado.
+int readPlayerInput(char *inputBuffer, int maxSize, char token)
+{
+    int size = 0;
+    uint64_t c;
+    while (size < (maxSize - 1) && (c = getChar()) != '\n' && c != token)
+    {
+
+        if (c && c != '\t') // Verificamos que se presiona una letra. No permitimos tabs en esta consola porque romperia con las dimensiones predeterminadas.
+        {
+            if (c != '\b')
+            {
+                displayChar(c);
+                inputBuffer[size++] = c;
+            }
+            else if (size > 0)
+            {
+                displayChar('\b');
+                size--;
+            }
+        } else
+        { // Se hace un update en el timer visual para que el jugador vea el tiempo que lleva.
+        int time = (currentPlayer == PLAYER1 ? timer_player1 : timer_player2);
+        if(time%TIMER_TICKS_PER_SEC==0)
+        {
+            // printInt(time/TIMER_TICKS_PER_SEC);
+            updateTimerConsole(time/TIMER_TICKS_PER_SEC);
+        }
+
+        if ((timer_player1 / TIMER_TICKS_PER_SEC) >= 60 || (timer_player2 / TIMER_TICKS_PER_SEC) >= 60)
+        {
+            return -1;
+        }}
+    }
+    // Ponemos la marca de final al string.
+    inputBuffer[size++] = 0;
+    if(c == '\n'){
+        char aux[size];
+        memcpy(aux, inputBuffer, size);
+        if (processGame(inputBuffer)){
+                printLogLine(aux, currentPlayer);
+                endTimer(currentPlayer);
+                (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
+                startTimer(currentPlayer);
+                printPlayer(currentPlayer, LAST_LINE);
+                printEntireLog();
+            }else{
+                clearLine(LAST_LINE);
+                printPlayer(currentPlayer, LAST_LINE);
+                resetCursor();
+            }
+    }
+    
+    return c == token;
+}
+
 
 /****Inicializamos piezas y tablero *****/
 
@@ -235,29 +340,23 @@ static t_piece initializePiece(int posX, int posY, typePieces name, int color, i
 
 void drawBoard(int x, int y)
 {
-    char letter = 'a';
-    // for (int h = y, m =1; h < HEIGHT && m < 9; h+=TILE, m++)
-    // {
-    //     _setCursor(x, h);
-    //     printInt(m);
-    // }
-    // for (int i = x, j = 0 ; i < WIDTH && i < 8; j+=TILE, j++)
-    // {
-    //     _setCursor(i, y);
-    //     putChar(letter);
-    //     letter += j;
-    // }
-    
+    char *c[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    char numToPrint[2];
     for (int i = 0; i < 8; i++) //WIDTH_T / PIECE_WIDTH
     {
         for (int j = 0; j < 8; j++) //HEIGHT_T / PIECE_HEIGHT
         {
-            if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)) //ambos pares o ambos impares
+            if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)) // ambos pares o ambos impares
                 drawSquare(x + i * TILE, y + j * TILE, TILE, BEIGE);
             else
                 drawSquare(x + i * TILE, y + j * TILE, TILE, BROWN);
         }
-    } 
+        uintToBase(i+1, numToPrint, 10);
+        // Numeros
+        printIn(c[i], (MAX_WIDTH / CHAR_WIDTH) + 7 + i * (TILE / CHAR_WIDTH), LAST_LINE - 4, BROWN);
+        // Letras.
+        printIn(numToPrint, (MAX_WIDTH / CHAR_WIDTH) - 2, i * (TILE / CHAR_HEIGHT) + 3, BEIGE);
+    }
 }
 
 static void drawPieces(int x, int y)
@@ -341,8 +440,7 @@ void enroque(int lon){
     int empty = -1;
     int fromX ,fromY;
 
-    if (lon == 2 || lon == 3){
-        if((board[0][0].empty == FALSE ||  board[7][0].empty == FALSE) && board[4][0].empty == FALSE){
+    if((board[0][0].empty == FALSE ||  board[7][0].empty == FALSE) && board[4][0].empty == FALSE){
             if(tower1P1.moved == FALSE  && kingP1.moved == FALSE ){    
                 //vemos de izquierda a derecha, torre 1 es en A1 y torre 2 es en H1
                 if(lon == 2){//enroque corto
@@ -362,9 +460,9 @@ void enroque(int lon){
                     }
                 }
             }
-        }
+    }
         //para el jugador 2
-        else{
+    else{
             if((board[0][7].empty == FALSE || board[7][7].empty == FALSE) && board[4][7].empty == FALSE){
                 if(tower1P2.moved == FALSE  && kingP2.moved == FALSE ){    
                     //vemos de izquierda a derecha, torre 1 es en A8 y torre 2 es en H8
@@ -386,7 +484,6 @@ void enroque(int lon){
                     }
                 }
             }
-        }
     }
 }
 

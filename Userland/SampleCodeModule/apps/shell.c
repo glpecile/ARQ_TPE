@@ -17,7 +17,7 @@ void intializeShell()
     //int exit = 0;
     char input[MAX_INPUT];
     loadCommands();
-    _setCursor(0, HEIGHT - CHAR_HEIGHT / 2);
+    _setCursor(0, HEIGHT - 1);
     // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
     
     while (1) // !exit

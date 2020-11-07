@@ -7,15 +7,18 @@
 #include <shell.h>
 #include <colors.h>
 #include <chessPieces.h>
+#include <chessConsole.h>
 
 #define WIDTH_T 1024
 #define HEIGHT_T 768
 #define TILE 85
+#define TIMER_TICKS_PER_SEC 18
 
 #define NEW_GAME 0
 #define CONTINUE_GAME 1
 #define PLAYER1 1
 #define PLAYER2 2
+#define KING_KILLED 3
 
 /**
  *  typePiece: 0: Peon, 1: Torre, 2: Caballo, 3: Alfil, 4: Reina, 5: Rey.
@@ -29,7 +32,6 @@ typedef struct
     int posX;
     int posY;
     int moved; //si aun no se movio, esta en 0
-    //int (*fn)(int fromX, int fromY, int toX, int toY);
 } t_piece;
 
 typedef struct
@@ -40,7 +42,6 @@ typedef struct
 
 
 void startGame(int mode);
-void printPlayer(int number);
 int processGame(char *inputBuffer);
 void validMovePieces(int position[4]);
 void drawBoard(int x, int y);
