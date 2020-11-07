@@ -115,15 +115,20 @@ void drawFigure(char *toDraw, int color, int size, int x, int y)
 	}
 }
 
-void drawSquare(unsigned int x, unsigned int y, int l, int color)
+void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color)
 {
-	for (int i = 0; i < l; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < l; j++)
+		for (int j = 0; j < base; j++)
 		{
-			drawPixel(x + i, y + j, color);
+			drawPixel(x + j, y + i, color);
 		}
 	}
+}
+
+void drawSquare(unsigned int x, unsigned int y, int area, int color)
+{
+	drawRectangle(x, y, area, area, color);
 }
 
 void drawCursor(int x, int y, int blink)

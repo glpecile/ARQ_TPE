@@ -31,11 +31,14 @@ void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgC
  */
 void drawFigure(char *toDraw, int color, int size, int x, int y);
 
-void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color);
 /**
- * Dibuja un cuadrado en una posición determinada a través de una syscall.
+ * Dibuja un rectangulo en una posición determinada a través de una syscall.
  */
-void drawSquare(unsigned int x, unsigned int y, int l, int color);
+void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
+/**
+ * Misma funcionalidad que drawRectangle, composicion con la misma.
+ */
+void drawSquare(unsigned int x, unsigned int y, int area, int color);
 /**
  *  Limpia la pantalla en su toalidad.
  */

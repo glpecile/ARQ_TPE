@@ -9,7 +9,7 @@ GLOBAL _sGetChar
 GLOBAL _swrite
 GLOBAL _setCursor
 GLOBAL _drawFigure
-GLOBAL _drawSquare
+GLOBAL _drawRectangle
 GLOBAL _clearScreen
 
 SECTION .text
@@ -82,7 +82,7 @@ _sGetChar:
 _setCursor:
 	syscall 5
 
-_drawSquare:
+_drawRectangle:
 	syscall 6
 
 _clearScreen:

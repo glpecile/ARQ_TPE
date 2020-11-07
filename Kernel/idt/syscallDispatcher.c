@@ -30,8 +30,8 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
             setCursor(rsi,rdx);
             return 1;
         case 6:
-            // void drawSquare(unsigned int x, unsigned int y, int l, int color);
-            drawSquare(rsi, rdx, rcx, r8);
+            // void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
+            drawRectangle(rsi, rdx, rcx, r8, r9);
             return 1;
         case 7:
             clearScreen();

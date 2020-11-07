@@ -30,8 +30,6 @@ typedef struct{
 
 extern void _setCursor(int x, int y);
 
-extern void _drawSquare(unsigned int x, unsigned int y, int l, int color);
-
 extern void _clearScreen();
 
 extern void _drawFigure(char *toDraw, int color, int size, int x, int y);
@@ -55,7 +53,7 @@ int processInput(char *inputBuffer);
 void printUser();
 void help();
 void inforeg(uint64_t *reg);
-//void printCurrentTime();
+void printCurrentTime();
 void printmem();
 void invalidOpCodeException();
 void invalidZeroDivisionException();

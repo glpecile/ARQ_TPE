@@ -20,6 +20,14 @@ extern uint64_t _sGetChar();
 */
 extern uint64_t _getTime(int desc);
 
+/**
+ * Dibuja un rectangulo en la pantalla. Se utiliza
+ * para el manejo grafico de la pantalla en la consola
+ * dentro de chess ya que se necesita relizar una libreria
+ * para manejar la misma.
+ */
+extern void _drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
+
 uint64_t getChar();
 
 void putChar(char c);
@@ -27,6 +35,8 @@ void putChar(char c);
 void print(char *s);
 
 void printWithColor(char *string, int color);
+
+void printInt(int num);
 
 int strlen(char *s);
 
@@ -47,5 +57,9 @@ int pow(int base, unsigned int exp);
 uint64_t hexaToInt(char * s);
 
 void numToStr(int num, char *string, int len);
+
+void *memcpy(void *destination, const void *source, uint64_t length);
+
+void drawSquare(int x, int y, int l, int color);
 
 #endif

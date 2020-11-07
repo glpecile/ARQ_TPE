@@ -36,7 +36,7 @@ typedef struct
 typedef struct
 {
     t_piece piece;
-    int empty; //si esta vacio es 0
+    int empty; //si no esta vacio es 0
 } t_tile;
 
 
