@@ -28,6 +28,12 @@ extern uint64_t _getTime(int desc);
  */
 extern void _drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
 
+/**
+ * Funcion que recibe como parametro puntero a funcion y flag para activar
+ * o desactivar la misma que se ejecuta cada vez que se realiza un tick.
+ */
+extern void _timerFunc(void(*f), int toDo);
+
 uint64_t getChar();
 
 void putChar(char c);

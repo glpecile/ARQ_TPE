@@ -2,8 +2,6 @@
 ; syscallManager.asm: Manejo de syscalls de Userland a Kernerl.
 ; Si bien se debe reducir el código en assembler por no ser portable,
 ; es indispensable para la conexión por la interrupción int80h (igual que Linux).
-;
-GLOBAL _sTicksElapsed
 GLOBAL _getTime
 GLOBAL _sGetChar
 GLOBAL _swrite
@@ -11,6 +9,7 @@ GLOBAL _setCursor
 GLOBAL _drawFigure
 GLOBAL _drawRectangle
 GLOBAL _clearScreen
+GLOBAL _timerFunc
 
 SECTION .text
 
@@ -64,9 +63,6 @@ SECTION .text
     ret     
 %endmacro
 
-_sTicksElapsed:
-    syscall 0
-
 _getTime:
     syscall 1
 
@@ -87,3 +83,6 @@ _drawRectangle:
 
 _clearScreen:
 	syscall 7
+
+_timerFunc:
+	syscall 0

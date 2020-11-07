@@ -31,7 +31,7 @@ void intializeShell()
 
 void loadCommands()
 {
-    loadCommand(&inforeg, "inforeg", "Displays all the information regarding the registers.\n");
+    loadCommand(&getRegs, "inforeg", "Displays all the information regarding the registers.\n");
     loadCommand(&help, "help", "Displays the description of all functions available.\n");
     loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");

@@ -234,7 +234,6 @@ static t_piece initializePiece(int posX, int posY, typePieces name, int color, i
     piece.player = player;
     piece.name = name;
     piece.color = color;
-    piece.state = 0;
     piece.posX = posX;
     piece.posY = posY;
     piece.moved = FALSE;
@@ -310,7 +309,7 @@ static void move(t_piece piece, int toX, int toY)
 {
     board[piece.posX][piece.posY].empty = TRUE;
     deleteFigure(piece);
-    printInt(board[piece.posX][piece.posY].empty);
+    //printInt(board[piece.posX][piece.posY].empty);
     piece.posX = toX;
     piece.posY = toY;
     piece.moved = TRUE;
@@ -445,8 +444,7 @@ static int isEmptyN(t_piece fromPiece, int toX, int toY, int iX, int iY)
         for (int j = fromY - iY; j >= toY; j--)
         {
             if (board[i][j].empty == FALSE ){//&& board[i][j].piece.posX != toX &&  board[i][j].piece.posY != toY
-                print("a");
-                printInt(board[i][j].piece.name);
+                print("a");                
                 return 1;
             }
         }
@@ -647,10 +645,15 @@ int bishop(t_piece fromPiece, int toX, int toY)
 
     int empty = -1;
     if (toX - fromX == toY - fromY){ // ambos pos o neg
-        if(toX > fromX)
+        if(toX > fromX){
             empty = isEmptyP(fromPiece, toX, toY, 1, 1);
-        else 
+            printInt(board[fromX+1][fromY+1].empty);
+        }
+        else {
+            printInt(board[fromX-1][fromY-1].empty);
             empty = isEmptyN(fromPiece, toX, toY, 1, 1);
+            
+        }
     }
     else{
         if (-(toX - fromX) == toY - fromY){
@@ -711,29 +714,37 @@ int horse(t_piece fromPiece, int toX, int toY)
     int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
     int empty = -1;
-    if ((((toX != fromX + 2) || (toX != fromX - 2)) && ((toY != fromY + 1) || (toY != fromY - 1))) ||
-        (((toX != fromX + 1) || (toX != fromX - 1)) && ((toY != fromY + 2) || (toY != fromY - 2))))
-    {
-        return 1;
-    }
-    t_tile toTile1 , toTile2;
-    if(toX == fromX + 2 && toY == fromY + 1) {
-        toTile1 = getTile(toX, fromY), toTile2 = getTile(fromX, toY); 
-        empty = isEmptyP(fromPiece, toX, toY, 1, 0) && isEmptyP(toTile1.piece, toX, toY, 0, -1);
-    }
-    int potentialMoves[8][8] = {
-    		{ fromX + 1, fromY - 2 },
-    		{ fromX + 2, fromY - 1 }, 
-    		{ fromX - 1, fromY - 2 }, 
-    		{ fromX - 2, fromY - 1 }, 
-    		{ fromX + 1, fromY + 2 }, 
-    		{ fromX + 2, fromY + 1 }, 
-    		{ fromX - 1, fromY + 2 }, 
-    		{ fromX - 2, fromY + 1 }, 
-    	};
-    if (toTile2.empty != FALSE)
-        empty = attack(fromPiece, toTile2.piece);
 
+    int potentialMoves[8][2] = {
+        {fromX + 1, fromY - 2},
+        {fromX + 2, fromY - 1},
+        {fromX - 1, fromY - 2},
+        {fromX - 2, fromY - 1},
+        {fromX + 1, fromY + 2},
+        {fromX + 2, fromY + 1},
+        {fromX - 1, fromY + 2},
+        {fromX - 2, fromY + 1},
+    };
+    t_tile tile = board[toX][toY];
+    printInt(tile.empty);
+
+    for (int j = 0; j < 8; j++)
+    {
+        if (toX == potentialMoves[j][0] && toY == potentialMoves[j][1] )
+        {
+            print("existe el mov deseado...");
+            printInt(tile.empty);
+            if (tile.empty != FALSE){
+                print("no hay");
+                return 0;    
+            }
+            else{
+                print("aca");
+                empty = attack(fromPiece, tile.piece);
+                return empty; 
+            }                    
+        }
+    }       
     return empty;
 }
 

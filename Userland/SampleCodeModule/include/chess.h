@@ -26,7 +26,6 @@ typedef struct
     int player;
     typePieces name;
     int color;
-    int state; //si esta vivo es 0, sino 1
     int posX;
     int posY;
     int moved; //si aun no se movio, esta en 0

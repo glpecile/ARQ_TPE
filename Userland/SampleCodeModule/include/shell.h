@@ -33,6 +33,9 @@ extern void _setCursor(int x, int y);
 extern void _clearScreen();
 
 extern void _drawFigure(char *toDraw, int color, int size, int x, int y);
+
+extern void getRegs(int argcount, char *args[]);
+
 /**
  * Inicializa la estructura que ejecuta los programas del usuario.
 */
