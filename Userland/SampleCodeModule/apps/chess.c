@@ -17,7 +17,7 @@ char *piecesCoronation[4]= { "queen", "tower", "bishop", "horse"};
 static typePieces toCoronation = 6;
 
 
-int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1;
+int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1, skip_turn = FALSE;
 
 static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player);
 static void initializeBoard();
@@ -29,6 +29,7 @@ static t_tile getTile(int x, int y);
 static void move(t_piece piece, int toX, int toY);
 static int isEmptyP(int fromX, int fromY, int toX, int toY);
 static int isEmptyN(int fromX, int fromY, int toX, int toY);
+int checkPeonAlPaso(t_piece piece, int toX, int toY);
 
 void game();
 int readPlayerInput(char *inputBuffer, int maxSize, char token);
@@ -533,16 +534,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
                 {
                     empty = attack(fromPiece, toTile.piece);
                     return empty;
-                }                   
-                //vereficamos si podemos hacer captura al paso, porque en diagonal esta libre
-                else
-                {
-                    toTile = getTile(toX, toY - 1);
-                    if (toTile.empty == FALSE){
-                        empty = attack(fromPiece, toTile.piece);
-                        return empty;
-                    }
-                }                
+                }                                   
             }
             if (toX == fromX - 1 && toY == fromY +1)
             {
@@ -551,15 +543,6 @@ int pawn(t_piece fromPiece, int toX, int toY)
                 {
                     empty = attack(fromPiece, toTile.piece);
                     return empty;
-                }
-                //vereficamos si podemos hacer captura al paso
-                else
-                {
-                   toTile = getTile(toX, toY - 1);
-                    if (toTile.empty == FALSE){
-                        empty = attack(fromPiece, toTile.piece);
-                        return empty;
-                    }
                 }
             }
         }
@@ -570,6 +553,11 @@ int pawn(t_piece fromPiece, int toX, int toY)
             {
                 //miro si los 2 de adelante estan libres
                 empty = isEmptyP(fromX, fromY, toX, toY);
+                //aca se hace la verificacion del peon al paso y se elimina esta misma pieza si tengo al lado un peon enemigo (izq y derecha)
+                if(empty == 0){ //el espacio debe estar vacio.
+                     printIn("Chequeando al paso", 5,4, RED);
+                    empty = checkPeonAlPaso(fromPiece,toX,toY);
+                }
             }
             else{
                 if (toY == FINAL_ROW && toCoronation != 6)
@@ -600,15 +588,6 @@ int pawn(t_piece fromPiece, int toX, int toY)
                         empty = attack(fromPiece, toTile.piece);
                         return empty;
                     }
-                    //vereficamos si podemos hacer captura al paso, porque en diagonal esta libre
-                    else
-                    {
-                        toTile = getTile(toX , toY +1);
-                        if (toTile.empty == FALSE){
-                            empty = attack(fromPiece, toTile.piece);
-                            return empty;
-                        }
-                    }
                 }
                 if (toX == fromX - 1 && toY == fromY - 1)
                 {
@@ -618,24 +597,19 @@ int pawn(t_piece fromPiece, int toX, int toY)
                         empty = attack(fromPiece, toTile.piece);
                         return empty;
                     }
-                    //vereficamos si podemos hacer captura al paso
-                    else
-                    {
-                        toTile = getTile(toX, toY + 1);
-                        if (toTile.empty == FALSE){
-                            empty = attack(fromPiece, toTile.piece);
-                            return empty;
-                        }
-                    }
                 }
          }
         //si el movimiento es recto
         else
         {
                 if (toY == fromY - 2 && fromPiece.moved == FALSE)
-                {
-                    //miro si los 2 tile de las filas adelante estan vacias
+                {//miro si los 2 tile de las filas adelante estan vacias
                     empty = isEmptyN(fromX, fromY, toX, toY);
+                    if(empty==0){ //el espacio debe estar vacio.
+                        printIn("Chequeando al paso", 5,4, RED);
+                        empty = checkPeonAlPaso(fromPiece,toX,toY);
+                    }
+                    return empty;
                 }
                 else{
                     if( toY == FIRST_ROW && toCoronation != 6){ 
@@ -644,6 +618,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
                     }
                     if(toY == fromY - 1){
                         empty = isEmptyN(fromX, fromY, toX, toY);
+                        return empty;
                     }                    
                 }        
         }
@@ -839,4 +814,36 @@ int horse(t_piece fromPiece, int toX, int toY)
     }       
     return empty;
 }
-  
+int checkPeonAlPaso(t_piece piece, int toX, int toY){
+    t_tile neighbour1;
+    t_tile neighbour2;
+    t_tile aux = {{0,EMPTY,0,0,0,0},TRUE};
+    if(toX -1 < 0){
+        neighbour1 = aux;
+    }else{
+        neighbour1 = getTile(toX-1, toY);
+    }
+    if(toX + 1 > 7){
+        neighbour2 = aux;
+    }else{
+        neighbour2 = getTile(toX + 1, toY);
+    }
+    
+    t_tile neighbours[]={neighbour1,neighbour2};
+    for(int i = 0; i<2 && !skip_turn; i++){
+        t_tile neighbour = neighbours[i];
+        if(neighbour.empty == FALSE && neighbour.piece.name == PAWN){
+            //Se elimino el peon que sufre la jugada y se le avisa al espacio que queda libre
+            deleteFigure(piece);
+            t_tile fromTile = getTile(piece.posX, piece.posY);
+            fromTile.empty = TRUE;
+            //Se mueve obligatoriamente al peon contrario para que ejecute el peon al paso.
+            int where_to_moveY = fromTile.piece.color == WHITE ? neighbour.piece.posY - 1 : neighbour.piece.posY + 1;
+            move(neighbour.piece, piece.posX, where_to_moveY);
+            neighbour.empty = TRUE;
+            skip_turn = TRUE;
+            printIn("Peon al paso", 4,4, RED);
+        }
+    }
+    return skip_turn; //es decir que si se ejecuto elpeon al paso debo decir que ese espacio no esta libre para que no se ejecute el move.
+}
