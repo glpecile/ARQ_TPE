@@ -16,8 +16,6 @@ char input[MAX_INPUT];
 char *piecesCoronation[4]= { "queen", "tower", "bishop", "horse"};
 static typePieces toCoronation = 6;
 
-//void intializeTestingBoard();
-
 static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player);
 static void initializeBoard();
 static void drawPieces(int x, int y);
@@ -26,10 +24,8 @@ static int fetchMovement(t_piece piece, int toX, int toY);
 static void deleteFigure(t_piece toPiece);
 static t_tile getTile(int x, int y);
 static void move(t_piece piece, int toX, int toY);
-static int isEmptyP(t_piece fromPiece, int toX, int toY ,int iX, int iY);
-static int isEmptyN(t_piece fromPiece, int toX, int toY, int iX, int iY);
-static int isEmptyP2(t_piece fromPiece, int toX, int toY, int iX, int iY);
-static int isEmptyN2(t_piece fromPiece, int toX, int toY, int iX, int iY);
+static int isEmptyP(int fromX, int fromY, int toX, int toY);
+static int isEmptyN(int fromX, int fromY, int toX, int toY);
 
 void startGame(int mode)
 {
@@ -38,7 +34,6 @@ void startGame(int mode)
     // print("Player 1: \t");
     // print("Player 2: \t");
     // print("TIME: ");
-    // putChar('\n');
     drawBoard(300, 0);
     //_setCursor(0, HEIGHT);
 
@@ -46,7 +41,6 @@ void startGame(int mode)
     {
         int quit = 1;
         initializeBoard();
-        //intializeTestingBoard();
         drawPieces(300, 0);
         while (quit) //c = getChar()) != 'q'
         {
@@ -98,8 +92,7 @@ int processGame(char *inputBuffer)
                     return 1;           
                 }
             }
-            //print("Invalid input, please use the correct notation.");
-            return 0;
+            return 0;//"Invalid input, please use the correct notation."
         }
         position[dimPosition++] = letter -'A';
         position[dimPosition++] = num - '0' - 1;
@@ -242,6 +235,19 @@ static t_piece initializePiece(int posX, int posY, typePieces name, int color, i
 
 void drawBoard(int x, int y)
 {
+    char letter = 'a';
+    // for (int h = y, m =1; h < HEIGHT && m < 9; h+=TILE, m++)
+    // {
+    //     _setCursor(x, h);
+    //     printInt(m);
+    // }
+    // for (int i = x, j = 0 ; i < WIDTH && i < 8; j+=TILE, j++)
+    // {
+    //     _setCursor(i, y);
+    //     putChar(letter);
+    //     letter += j;
+    // }
+    
     for (int i = 0; i < 8; i++) //WIDTH_T / PIECE_WIDTH
     {
         for (int j = 0; j < 8; j++) //HEIGHT_T / PIECE_HEIGHT
@@ -251,16 +257,7 @@ void drawBoard(int x, int y)
             else
                 drawSquare(x + i * TILE, y + j * TILE, TILE, BROWN);
         }
-
-    }
-    // print("a\t");
-    // print("b\t");
-    // print("c\t");
-    // print("d\t");
-    // print("e\t");
-    // print("f\t");
-    // print("g\t");
-    // print("h\n");
+    } 
 }
 
 static void drawPieces(int x, int y)
@@ -309,7 +306,6 @@ static void move(t_piece piece, int toX, int toY)
 {
     board[piece.posX][piece.posY].empty = TRUE;
     deleteFigure(piece);
-    //printInt(board[piece.posX][piece.posY].empty);
     piece.posX = toX;
     piece.posY = toY;
     piece.moved = TRUE;
@@ -322,8 +318,6 @@ static void move(t_piece piece, int toX, int toY)
 static t_tile getTile(int x, int y)
 {
     t_tile toReturn = board[x][y];
-    // printInt(toReturn.piece.posX);
-    // printInt(toReturn.piece.posY);
     return toReturn;
 }
 
@@ -343,28 +337,26 @@ void enroque(int lon){
     //lon sirve por si aun no se movieron las 2 torres y el user elije que enroque hacer
     t_piece tower1P1 = board[0][0].piece, tower2P1 = board[7][0].piece, kingP1 = board[4][0].piece; //piezas del jug 1
     t_piece tower1P2 = board[0][7].piece, tower2P2 = board[7][7].piece, kingP2 = board[4][7].piece; //piezas del jug 2
+    
     int empty = -1;
-
-    t_tile toTower;
+    int fromX ,fromY;
 
     if (lon == 2 || lon == 3){
         if((board[0][0].empty == FALSE ||  board[7][0].empty == FALSE) && board[4][0].empty == FALSE){
             if(tower1P1.moved == FALSE  && kingP1.moved == FALSE ){    
                 //vemos de izquierda a derecha, torre 1 es en A1 y torre 2 es en H1
                 if(lon == 2){//enroque corto
-                    toTower = getTile(7 - lon, 0);
-                    empty = isEmptyP(tower2P1, 7-lon, 0, -1, 0);
-                       
-                    if(empty == FALSE && toTower.empty != FALSE){
+                    fromX = tower2P1.posX; fromY = tower2P1.posY;
+                    empty = tower(tower2P1, fromX + lon, fromY);                       
+                    if(empty == FALSE){
                         move(tower2P1, 7 - lon, 0);
                         move(kingP1, 4 + 2, 0);
                     }
                 }
                 if(lon == 3){//enroque largo
-                    toTower = getTile(7 - lon, 0);
-                    empty = isEmptyP(tower1P1, 7- lon, 0, 1, 0);
+                    empty = tower(tower1P1, 7- lon, 0);
                     
-                    if(empty != TRUE && toTower.empty != FALSE){
+                    if(empty == FALSE){
                         move(tower1P1, 0 + lon, 0);
                         move(kingP1, 4 -2, 0);
                     }
@@ -377,19 +369,17 @@ void enroque(int lon){
                 if(tower1P2.moved == FALSE  && kingP2.moved == FALSE ){    
                     //vemos de izquierda a derecha, torre 1 es en A8 y torre 2 es en H8
                     if(lon == 2){//enroque corto
-                        toTower = getTile(7 - lon, 7);
-                        empty = isEmptyP(tower2P2, 7- lon, 7, -1, 0);
+                        empty = tower(tower2P2, 7- lon, 7);
                         
-                        if(empty != TRUE && toTower.empty != FALSE){
+                        if(empty == FALSE){
                             move(tower2P2, 7 - lon, 7);
                             move(kingP2, 4 + 2, 7);
                         }
                     }
                     if(lon == 3){//enroque largo
-                        toTower = getTile(0 + lon, 7);
-                        empty = isEmptyP(tower1P2, 0 + lon, 7, 1, 0);
+                        empty = tower(tower1P2, 0 + lon, 7);
                         
-                        if(empty != FALSE && toTower.empty != FALSE){
+                        if(empty == FALSE){
                             move(tower1P2, 0 + lon, 7);
                             move(kingP2, 4 -2, 7);
                         }
@@ -402,71 +392,27 @@ void enroque(int lon){
 
 //vemos si estan vacios los casilleros entre medio hacia adelante y atras, dependiendo el movimiento
 //1 es que no pude moverme, 0 que si
-static int isEmptyP(t_piece fromPiece, int toX, int toY, int iX, int iY)
+static int isEmptyP(int fromX, int fromY, int toX, int toY)
 {
-    int fromX = fromPiece.posX, fromY = fromPiece.posY;
-
-        for (int i = fromX + iX; i <= toX; i++)
-        {
-            for (int j = fromY + iY; j <= toY; j++)
-            {
-                if (board[i][j].empty == FALSE){
-                    return 1;
-                }
-            }
-        } 
-
-    return 0;
-}
-
-static int isEmptyP2(t_piece fromPiece, int toX, int toY, int iX, int iY)
-{
-    int fromX = fromPiece.posX, fromY = fromPiece.posY;
-
-    for (int i = fromX - iX; i >= toX; i--)
+    for (int j = 1; fromY + j <= toY; j++)
     {
-        for (int j = fromY + iY; j <= toY; j++)
-            {
-                print("emp");
-                if (board[i][j].empty == FALSE){
-                    return 1;
-                }
-            }
-    }
-    return 0;
-}
-static int isEmptyN(t_piece fromPiece, int toX, int toY, int iX, int iY)
-{
-    int fromX = fromPiece.posX, fromY = fromPiece.posY;
-
-    for (int i = fromX - iX; i >= toX; i--)
-    {
-        for (int j = fromY - iY; j >= toY; j--)
-        {
-            if (board[i][j].empty == FALSE ){//&& board[i][j].piece.posX != toX &&  board[i][j].piece.posY != toY
-                print("a");                
+            if (board[fromX][fromY +j].empty == FALSE){
                 return 1;
             }
-        }
-    }
+    }    
     return 0;
 }
-static int isEmptyN2(t_piece fromPiece, int toX, int toY, int iX, int iY)
-{
-    int fromX = fromPiece.posX, fromY = fromPiece.posY;
 
-    for (int i = fromX + iX; i <= toX; i++)
+static int isEmptyN(int fromX, int fromY, int toX, int toY)
+{
+    for (int j = 1; fromY - j >= toY; j++)
     {
-        for (int j = fromY - iY; j >= toY; j--)
-            {
-                if (board[i][j].empty == FALSE){
-                    return 1;
-                }
+            if (board[fromX][fromY - j].empty == FALSE ){//&& board[i][j].piece.posX != toX &&  board[i][j].piece.posY != toY
+                return 1; 
             }
     }
     return 0;
 }
-
 //************* PIEZAS ***********//
 
 int pawn(t_piece fromPiece, int toX, int toY)
@@ -526,7 +472,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
             if (toY == fromY + 2 && fromPiece.moved == FALSE)
             {
                 //miro si los 2 de adelante estan libres
-                empty = isEmptyP(fromPiece, toX, toY,0, 1);
+                empty = isEmptyP(fromX, fromY, toX, toY);
             }
             else{
                 if (toY == FINAL_ROW && toCoronation != 6)
@@ -535,7 +481,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
                     return -1;
                 }
                 if(toY == fromY + 1){
-                    empty = isEmptyP(fromPiece, toX, toY,0, 1);
+                    empty = isEmptyP(fromX, fromY, toX, toY);
                 }
                      
             }       
@@ -592,7 +538,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
                 if (toY == fromY - 2 && fromPiece.moved == FALSE)
                 {
                     //miro si los 2 tile de las filas adelante estan vacias
-                    empty = isEmptyN(fromPiece, toX, toY ,0, 1);
+                    empty = isEmptyN(fromX, fromY, toX, toY);
                 }
                 else{
                     if( toY == FIRST_ROW && toCoronation != 6){ 
@@ -600,7 +546,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
                         return -1;
                     }
                     if(toY == fromY - 1){
-                        empty = isEmptyN(fromPiece, toX, toY,0, 1);
+                        empty = isEmptyN(fromX, fromY, toX, toY);
                     }                    
                 }        
         }
@@ -613,26 +559,57 @@ int tower(t_piece fromPiece, int toX, int toY)
     int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
     t_tile toTile= getTile(toX, toY);
-    int empty = -1;
+    int empty = -1, i;
 
     if (fromX == toX)
     {   
-        if(fromY < toY)
-            empty = isEmptyP(fromPiece, toX, toY, 0, 1);
-        else
-            empty = isEmptyN(fromPiece, toX, toY, 0, 1);
+        if(fromY < toY){//abajo
+            for(i = 1; fromY + i < toY; i++){
+                if(board[fromX][fromY +i].empty == FALSE){
+                    return 1;
+                }
+            }
+            empty = 0; 
+        }
+        else{//arriba
+            for(i = 1; fromY - i > toY; i++){
+                if(board[fromX][fromY -i].empty == FALSE){
+                    return 1;
+                }
+            }
+            empty = 0; 
+        }
     }
     else{
         if( fromY == toY){
-            if(fromX < toX)
-                empty = isEmptyP(fromPiece, toX, toY, 1, 0);
-            else
-                empty = isEmptyN(fromPiece, toX, toY, 1, 0);
+            if(fromX < toX){//derecha
+                for(i = 1; fromX + i < toX; i++){
+                    if(board[fromX + i][fromY].empty == FALSE){
+                        return 1;
+                    }
+                }
+                empty = 0; 
+            }
+            else{//izquierda
+                for(i = 1; fromX - i > toX; i++){
+                    if(board[fromX - i][fromY].empty == FALSE){
+                        return 1;
+                    }
+                }
+                empty = 0;
+            }
         }
     }
 
-    if (toTile.empty != FALSE && (empty == FALSE ))
+   if (toTile.empty == TRUE && empty == FALSE){//pude recorrer y si tambien esta vacio el ultimo, movete
+            return 0;
+    }
+    else
+    {
+       if(toTile.empty == FALSE && empty == FALSE){ //pudo recorrer y mira el ultimo a ver si puede comer
         empty = attack(fromPiece, toTile.piece);
+        }    
+    } 
     
     return empty;
 }
@@ -643,35 +620,58 @@ int bishop(t_piece fromPiece, int toX, int toY)
     int fromY = fromPiece.posY;
     t_tile toTile = getTile(toX, toY);
 
-    int empty = -1;
+    int empty = -1, i;
     if (toX - fromX == toY - fromY){ // ambos pos o neg
-        if(toX > fromX){
-            empty = isEmptyP(fromPiece, toX, toY, 1, 1);
-            printInt(board[fromX+1][fromY+1].empty);
+        if(toX > fromX){//  hacia la derecha y abajo 
+            for (i = 1; fromX + i < toX && fromY + i < toY; i++)
+            {
+                if(board[fromX + i][fromY + i].empty != TRUE){
+                    return 1;                   
+                }
+            }
+            empty = 0;
         }
-        else {
-            printInt(board[fromX-1][fromY-1].empty);
-            empty = isEmptyN(fromPiece, toX, toY, 1, 1);
-            
+        else{// hacia izquierda arriba
+            for (i = 1; fromX - i > toX && fromY - i > toY; i++)
+            {
+                if(board[fromX - i][fromY - i].empty != TRUE){
+                    return 1;
+                }
+            }
+            empty = 0;
         }
     }
     else{
         if (-(toX - fromX) == toY - fromY){
-            if(toX > fromX){
-                print("n2");
-                empty = isEmptyN2(fromPiece, toX, toY, 1, 1);
+            if(toX > fromX){// hacia la derecha y arriba 
+                for (i = 1; fromX + i < toX && fromY - i > toY; i++)
+                {
+                    if(board[fromX + i][fromY - i].empty != TRUE){
+                        return 1;                    
+                    }
+                }
+                empty = 0;
             }
-            else {
-                print("p2");
-                empty = isEmptyP2(fromPiece, toX, toY, 1, 1);
+            else{// hacia la izquierda abajo
+                for (i = 1; fromX - i > toX && fromY + i < toY; i++)
+                {
+                    if(board[fromX - i][fromY + i].empty != TRUE){
+                        return 1;
+                    }
+                }
+                empty = 0;
             }
         }
     }
-
-    if (toTile.empty != FALSE && empty == FALSE){
+    if (toTile.empty == FALSE && empty == FALSE){
         empty = attack(fromPiece, toTile.piece);
     }
-    
+    else
+    {
+        if(toTile.empty == TRUE && empty == FALSE){
+            return 0;
+        }
+    } 
     return empty;
 }
 
@@ -726,20 +726,15 @@ int horse(t_piece fromPiece, int toX, int toY)
         {fromX - 2, fromY + 1},
     };
     t_tile tile = board[toX][toY];
-    printInt(tile.empty);
 
     for (int j = 0; j < 8; j++)
     {
         if (toX == potentialMoves[j][0] && toY == potentialMoves[j][1] )
-        {
-            print("existe el mov deseado...");
-            printInt(tile.empty);
+        {;
             if (tile.empty != FALSE){
-                print("no hay");
                 return 0;    
             }
             else{
-                print("aca");
                 empty = attack(fromPiece, tile.piece);
                 return empty; 
             }                    
@@ -747,22 +742,4 @@ int horse(t_piece fromPiece, int toX, int toY)
     }       
     return empty;
 }
-
-// void intializeTestingBoard(){
-//     for (int i = 0; i < 8; i++)
-//     {
-//         for (int j = 0; j < 8; j++)
-//         {
-//             board[j][i].empty = TRUE;
-//         }
-//     }
-//     board[1][1].empty = FALSE;
-//     board[1][1].piece = initializePiece(1,1,PAWN,WHITE,PLAYER1);
-//     board[0][7].empty = FALSE;
-//     board[0][7].piece = initializePiece(0,7,TOWER,WHITE,PLAYER1);
-//     board[7][7].empty = FALSE;
-//     board[7][7].piece = initializePiece(7,7,TOWER,WHITE,PLAYER1);
-//     board[4][7].empty = FALSE;
-//     board[4][7].piece = initializePiece(4,7,KING,WHITE,PLAYER1);
-// }
   
