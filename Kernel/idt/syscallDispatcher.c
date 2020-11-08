@@ -20,13 +20,14 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
         // uint8_t getTime(int descriptor);
         return getTime(rsi);
     case 2:
-        // drawFigure(char *toDraw, int color, int size, int x, int y);
+        // void drawFigure(char *toDraw, int color, int size, int x, int y);
         drawFigure((char *)rsi, rdx, rcx, r8, r9);
         return 1;
     case 3:
         // uint64_t sWrite(char *buffer, int size, int color);
         return sWrite((char *)rsi, rdx, rcx);
     case 4:
+        // char sGetChar()
         return sGetChar();
     case 5:
         // setCursor(unsigned int new_x, unsigned int new_y, int color);

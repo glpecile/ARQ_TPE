@@ -1,3 +1,6 @@
+/**
+ * videoDriver.c: Driver encargado del manejo de la pantalla como recurso protegido.
+*/
 #include <videoDriver.h>
 
 // para testeo

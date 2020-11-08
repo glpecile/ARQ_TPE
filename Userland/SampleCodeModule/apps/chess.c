@@ -13,9 +13,9 @@
 
 t_tile board[8][8];
 char input[MAX_INPUT];
-char *piecesCoronation[4] = {"queen", "rook", "bishop", "knight"};
+char *piecesCoronation[4] = {"QUEEN", "ROOK", "BISHOP", "KNIGHT"};
 static typePieces toCoronation = 4;
-static int jaque = 0;
+static int jaqueP1 = 0, jaqueP2 = 0;
 
 int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1, skip_turn = FALSE, rotation = 4;
 
@@ -432,7 +432,7 @@ int attack(t_piece fromPiece, t_piece toPiece)
     t_tile toTile = getTile(toPiece.posX, toPiece.posY);
     if (fromPiece.player != toPiece.player)
     {
-        if (toPiece.name == KING) //  || jaque == 3 falta implementar.
+        if (toPiece.name == KING || jaqueP1 == 3 || jaqueP2 == 3) 
         {
             return 3;
         }
@@ -526,13 +526,18 @@ static void move(t_piece piece, int toX, int toY)
     int posXK, posYK, col;
     int prev = prevJaque(piece, &posXK, &posYK, &col);
 
-    if (prev == 0)
+    if (prev == 0 )
     {
-        // printIn("Jaque",300,LAST_LINE, YELLOW);
+        if (piece.player == PLAYER1){
+            jaqueP1++;
+            printIn("Check P1.",MAX_WIDTH + CHAR_WIDTH*2,LAST_LINE, YELLOW);
+        }
+        else{
+            jaqueP2++;
+            printIn("Check P2.",MAX_WIDTH + CHAR_WIDTH*2,LAST_LINE, YELLOW);
+        }
+        
         drawFigure(KING, col, posXK, posYK, MAX_WIDTH, 0);
-        //_drawFigure(piecesBitmap(KING), col , 5, MAX_WIDTH + posXK * TILE, posYK* TILE);
-        jaque++;
-        return;
     }
 }
 
@@ -567,7 +572,7 @@ void enroque(int lon)
     int empty = -1;
     int fromX, fromY;
 
-    if ((board[0][0].empty == FALSE || board[7][0].empty == FALSE) && board[4][0].empty == FALSE)
+    if ((board[0][0].empty == FALSE || board[7][0].empty == FALSE) && board[4][0].empty == FALSE && currentPlayer == PLAYER1)
     {
         if (ROOK1P1.moved == FALSE && kingP1.moved == FALSE)
         {
@@ -598,7 +603,7 @@ void enroque(int lon)
     //para el jugador 2
     else
     {
-        if ((board[0][7].empty == FALSE || board[7][7].empty == FALSE) && board[4][7].empty == FALSE)
+        if ((board[0][7].empty == FALSE || board[7][7].empty == FALSE) && board[4][7].empty == FALSE && currentPlayer == PLAYER2)
         {
             if (ROOK1P2.moved == FALSE && kingP2.moved == FALSE)
             {
