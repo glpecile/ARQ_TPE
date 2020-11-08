@@ -36,6 +36,7 @@ Dispone de las siguientes funcionalidades:
   - Enroque: Para realizar un enroque corto ```e 2``` mientras que un enroque largo se realiza con ```e 3```.
   - Rotación: ```r``` para rotar 90° la posición de las piezas y tablero de ajedrez.
   - Salida: ```Esc``` la tecla de escape permite salir del juego con la habilidad de resumir la partida ingresando ```chess -c``` desde la terminal.
+- Luego de realizar una jugada válida, la misma se imprimirá en pantalla, a modo de log, como jugada exitosa y luego se cambiara de turno reiniciando el contador. Se puede recrear la partida si se lo desea con las jugadas existentes del log.
 
 ## Syscalls
 
