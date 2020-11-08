@@ -7,9 +7,10 @@ GLOBAL _sGetChar
 GLOBAL _swrite
 GLOBAL _setCursor
 GLOBAL _drawFigure
-GLOBAL _drawRectangle
 GLOBAL _clearScreen
 GLOBAL _timerFunc
+GLOBAL _getPixelHeight
+GLOBAL _getPixelWidth
 
 SECTION .text
 
@@ -63,26 +64,21 @@ SECTION .text
     ret     
 %endmacro
 
-_getTime:
-    syscall 1
-
-_drawFigure:
-	syscall 2
-
-_swrite:
-	syscall 3
-
-_sGetChar:
-    syscall 4
-
-_setCursor:
-	syscall 5
-
-_drawRectangle:
-	syscall 6
-
-_clearScreen:
-	syscall 7
-
 _timerFunc:
 	syscall 0
+_getTime:
+    syscall 1
+_drawFigure:
+	syscall 2
+_swrite:
+	syscall 3
+_sGetChar:
+    syscall 4
+_setCursor:
+	syscall 5
+_clearScreen:
+	syscall 6
+_getPixelHeight:
+	syscall 7
+_getPixelWidth:
+	syscall 8

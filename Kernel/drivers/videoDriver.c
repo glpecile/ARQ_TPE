@@ -155,6 +155,16 @@ void clearLine()
 	}
 }
 
+int getPixelHeight()
+{
+	return screenData->height;
+}
+
+int getPixelWidth()
+{
+	return screenData->width;
+}
+
 void clearScreen()
 {
 	for (int y = 0; y < screenData->height; y++)

@@ -30,9 +30,8 @@ void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgC
  * Dibuja una figura genérica pasada como vector de chars en las coordenadas deseadas.
  */
 void drawFigure(char *toDraw, int color, int size, int x, int y);
-
 /**
- * Dibuja un rectangulo en una posición determinada a través de una syscall.
+ * Dibuja un rectangulo en una posición determinada.
  */
 void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
 /**
@@ -40,8 +39,19 @@ void drawRectangle(unsigned int x, unsigned int y, int base, int height, int col
  */
 void drawSquare(unsigned int x, unsigned int y, int area, int color);
 /**
- *  Limpia la pantalla en su toalidad.
+ * Limpia la pantalla en su toalidad.
  */
 void clearScreen();
+/**
+ * Limpia una linea en la pantalla.
+ */ 
 void clearLine();
+/**
+ * Retorna la cantidad de pixeles horizontales de la pantalla.
+ */ 
+int getPixelWidth();
+/**
+ * Retorna la cantidad de pixeles Verticales de la pantalla.
+ */ 
+int getPixelHeight();
 #endif

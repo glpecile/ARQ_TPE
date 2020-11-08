@@ -24,6 +24,5 @@ static char *__pieces_bitmap__[] = {
 
 char *piecesBitmap(int c)
 {
-    return __pieces_bitmap__ [c];
+    return __pieces_bitmap__[c];
 }
-

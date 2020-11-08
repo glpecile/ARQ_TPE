@@ -19,20 +19,19 @@ extern uint64_t _sGetChar();
  * define qué elemento pasar (día, hora, mes, etc).
 */
 extern uint64_t _getTime(int desc);
-
-/**
- * Dibuja un rectangulo en la pantalla. Se utiliza
- * para el manejo grafico de la pantalla en la consola
- * dentro de chess ya que se necesita relizar una libreria
- * para manejar la misma.
- */
-extern void _drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);
-
 /**
  * Funcion que recibe como parametro puntero a funcion y flag para activar
  * o desactivar la misma que se ejecuta cada vez que se realiza un tick.
  */
 extern void _timerFunc(void(*f), int toDo);
+
+extern int _getPixelHeight();
+
+extern int _getPixelWidth();
+
+int getScreenHeight();
+
+int getScreenWidth();
 
 uint64_t getChar();
 
@@ -65,7 +64,5 @@ uint64_t hexaToInt(char * s);
 void numToStr(int num, char *string, int len);
 
 void *memcpy(void *destination, const void *source, uint64_t length);
-
-void drawSquare(int x, int y, int l, int color);
 
 #endif

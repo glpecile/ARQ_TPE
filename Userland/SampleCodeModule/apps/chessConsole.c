@@ -11,7 +11,7 @@ static t_currentPos currentPos;
 
 static char log[LAST_LINE][7];
 static int playerOrder[LAST_LINE];
-static int currentSize = 0;
+int currentSize = 0;
 /**
  *  Imprime en una posicion y color determinado de la pantalla,
  * luego retorna a su posicion original.
@@ -32,7 +32,6 @@ void initializeCursor()
 void initializeLog(){
     currentSize = 0;
 }
-
 // Imprime una linea nueva de comando en el log
 void printLogLine(char *move, int player)
 {
@@ -54,15 +53,10 @@ void printPlayer(int number, int line)
     default:
         break;
     }
-    //currentPos.x+=10;
     printIn(aux, 0, line, GREEN);
 }
 void clearLine(int y)
 {
-    // for (int i = 0; i < MAX_WIDTH / CHAR_WIDTH; i++)
-    // {
-    //     _drawRectangle(getHorizontalPixelPosition(i), getVerticalPixelPosition(y), CHAR_WIDTH, CHAR_HEIGHT, BLACK);
-    // }
     char toDraw[] = "X";
     for (int i = 0; i < MAX_WIDTH / CHAR_WIDTH - CHAR_WIDTH; i++)
     {

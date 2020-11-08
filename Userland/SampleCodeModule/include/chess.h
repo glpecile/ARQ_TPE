@@ -9,8 +9,6 @@
 #include <chessPieces.h>
 #include <chessConsole.h>
 
-#define WIDTH_T 1024
-#define HEIGHT_T 768
 #define TILE 85
 #define TIMER_TICKS_PER_SEC 18
 

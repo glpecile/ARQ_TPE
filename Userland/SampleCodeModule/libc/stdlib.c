@@ -41,11 +41,6 @@ int scan(char *buffer, int size)
 	return len;
 }
 
-void drawSquare(int x, int y, int l, int color)
-{
-	_drawRectangle(x, y, l, l, color);
-}
-
 void *memcpy(void *destination, const void *source, uint64_t length)
 {
 	/*
@@ -229,20 +224,3 @@ uint64_t hexaToInt(char *s)
 	}
 	return rta;
 }
-
-// void hexaToInt(uint64_t value){
-//     int buffer[16];
-//     int dig = unitToBase(value, buffer, 16);
-//     int num = 16 - dig;
-//     for(int i=15; i >= 0; i--){
-//         if(i >= num){
-//                 buffer[i] = buffer[i-num];
-//             }else{
-//                 buffer[i] = '0';
-//             }
-//     }
-// }
-//                 buffer[i] = '0';
-//             }
-//     }
-// }

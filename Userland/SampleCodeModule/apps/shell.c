@@ -14,12 +14,9 @@ static int sizeC = 0;
 
 void intializeShell()
 {
-    //int exit = 0;
     char input[MAX_INPUT];
     loadCommands();
     _setCursor(0, HEIGHT - 1, GREEN);
-    // void drawFigure(char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width);
-
     while (1) // !exit
     {
         printUser();
@@ -94,6 +91,16 @@ int processInput(char *inputBuffer)
     }
     print("Invalid command, try again.\n");
     return 0;
+}
+
+int getScreenHeight()
+{
+    return _getPixelHeight() / CHAR_HEIGHT;
+}
+
+int getScreenWidth()
+{
+    return _getPixelWidth() / CHAR_WIDTH;
 }
 
 /*
@@ -192,7 +199,7 @@ void chess(int argSize, char *args[])
         startGame(CONTINUE_GAME);
     if (strcmp(args[0], "-man"))
     {
-        printWithColor("CHESS MANUAL.\n",BEIGE);
+        printWithColor("CHESS MANUAL.\n", BEIGE);
         print("- Valid moves: 'FROMX''FROMY' 'TOX''TOY', caps lock should be enabled and the move should be valid to end your turn.\n");
         print("- Castling: short 'e 2' or 'e 3'.\n");
         print("- Coronation: Enter piece name.\n");
