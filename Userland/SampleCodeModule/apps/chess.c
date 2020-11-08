@@ -14,10 +14,10 @@
 t_tile board[8][8];
 char input[MAX_INPUT];
 char *piecesCoronation[4]= { "queen", "tower", "bishop", "horse"};
-static typePieces toCoronation = 6;
+static typePieces toCoronation = 4;
+static int jaque = 0;
 
-
-int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1, skip_turn = FALSE;
+int timer_player1 = 0, timer_player2 = 0, currentPlayer = PLAYER1, skip_turn = FALSE, rotation = 4;
 
 static t_piece initializePiece(int posX, int posY, typePieces name, int color, int player);
 static void initializeBoard();
@@ -27,9 +27,15 @@ static int fetchMovement(t_piece piece, int toX, int toY);
 static void deleteFigure(t_piece toPiece);
 static t_tile getTile(int x, int y);
 static void move(t_piece piece, int toX, int toY);
+
+static void findKing(int player, int *posXK , int *posYK, int *col);
+static int prevJaque(t_piece fromPiece, int *posXK, int *posYK, int *col);
 static int isEmptyP(int fromX, int fromY, int toX, int toY);
 static int isEmptyN(int fromX, int fromY, int toX, int toY);
 int checkPeonAlPaso(t_piece piece, int toX, int toY);
+void rotate();
+void drawFigure();
+void printCoord();
 
 void game();
 int readPlayerInput(char *inputBuffer, int maxSize, char token);
@@ -40,28 +46,33 @@ void activeTimer();
 void startGame(int mode)
 {
     _clearScreen();
-    drawBoard(300, 0);
-
+    drawBoard(MAX_WIDTH, 0);
+    printCoord();
+    
     if (mode == NEW_GAME)
     {   
+        rotation = 4;
         initializeCursor();
         initializeBoard();
-        drawPieces(300, 0);
+        drawPieces(MAX_WIDTH, 0);
         currentPlayer = PLAYER1;
         startTimer(currentPlayer);
-        // Cambiar.
-        printPlayer(currentPlayer, LAST_LINE);
-        game();
+    }else if (mode == CONTINUE_GAME){
+        printIn("continue", 0,0,RED);
+        printEntireLog();
+        drawPieces(MAX_WIDTH, 0);
     }
-    if (mode == CONTINUE_GAME)
-        print("continue");
-    putChar('\n');
+    // Cambiar.
+    printPlayer(currentPlayer, LAST_LINE);
+    game();
+    
 }
 void game() {
     int quit = 0;
-    while (quit == 0) //c = getChar()) != 'q'
+    while (quit == 0)
         {
-            quit = readPlayerInput(input, MAX_INPUT, 'q');
+            skip_turn = FALSE;
+            quit = readPlayerInput(input, MAX_INPUT, ESC);
             // 1 si se movio la pieza 0 si no. -1 cuando se termino el tiempo del jugador o murio el rey del otro jugador.
             // if (processGame(input))
             // {
@@ -76,7 +87,7 @@ void game() {
             (currentPlayer == PLAYER1) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
         }
         if(quit == 3){
-            //Se mato al rey enemigo.
+            // Se mato al rey enemigo.
             (currentPlayer == PLAYER2) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
         }
 
@@ -121,11 +132,10 @@ int processGame(char *inputBuffer)
         position[dimPosition++] = num - '0' - 1;
     }
     
-    validMovePieces(position);
-    return 1;
+    return validMovePieces(position);
 }
 
-void validMovePieces(int position[4])
+int validMovePieces(int position[4])
 {
     int fromX = position[0]; // A - H COLUMNA
     int fromY = position[1]; // 0 - 7 FILA
@@ -135,18 +145,24 @@ void validMovePieces(int position[4])
     t_tile space = board[fromX][fromY];
     int empty = -1;
     
-    if (space.empty) 
-        return;//"No piece to access. Please move an actual piece.";
-    if (fromX == toX && fromY == toY)
-        return;//"Invalid move. Same position.";
-        
+    if (space.empty || (fromX == toX && fromY == toY)) 
+        return 0; //"No piece to access. Please move an actual piece." || "Invalid move. Same position.";
     empty = fetchMovement(space.piece, toX, toY); // Liberamos la pos de from
+    if(empty == 3){
+        space.empty = empty;
+        return 3;
+    }
     space.empty = empty;
+    return 1;
 }
 
 static int fetchMovement(t_piece piece, int toX, int toY)
 {
     int mov = -1;
+    //Verifico que la pieza seleccionada sea del jugador del turno. En caso contrario se retorna que no puede hacerse un movimiento.
+    if(currentPlayer != piece.player){
+        return FALSE;
+    }
     switch (piece.name)
     {
     case PAWN:
@@ -175,6 +191,8 @@ static int fetchMovement(t_piece piece, int toX, int toY)
     if(flag){
         move(piece, toX, toY);
     }
+    if(mov == 3)
+        return mov; //caso en que mato al rey
     return !flag;   
 }
 
@@ -214,7 +232,9 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
 
         if (c && c != '\t') // Verificamos que se presiona una letra. No permitimos tabs en esta consola porque romperia con las dimensiones predeterminadas.
         {
-            if (c != '\b')
+            if(c == 'r'){
+                rotate();
+            }else if (c != '\b')
             {
                 displayChar(c);
                 inputBuffer[size++] = c;
@@ -224,7 +244,8 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
                 displayChar('\b');
                 size--;
             }
-        } else
+        } 
+        else
         { // Se hace un update en el timer visual para que el jugador vea el tiempo que lleva.
         int time = (currentPlayer == PLAYER1 ? timer_player1 : timer_player2);
         if(time%TIMER_TICKS_PER_SEC==0)
@@ -240,17 +261,19 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
     }
     // Ponemos la marca de final al string.
     inputBuffer[size++] = 0;
-    if(c == '\n'){
+    if(c == '\n')
+    {
         char aux[size];
         memcpy(aux, inputBuffer, size);
-        if (processGame(inputBuffer)){
+        if (processGame(inputBuffer) == 1){
                 printLogLine(aux, currentPlayer);
                 endTimer(currentPlayer);
-                (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
+                if(!skip_turn)
+                    (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
                 startTimer(currentPlayer);
                 printPlayer(currentPlayer, LAST_LINE);
                 printEntireLog();
-            }else{
+            } else if (processGame == 0){
                 clearLine(LAST_LINE);
                 printPlayer(currentPlayer, LAST_LINE);
                 resetCursor();
@@ -341,8 +364,7 @@ static t_piece initializePiece(int posX, int posY, typePieces name, int color, i
 
 void drawBoard(int x, int y)
 {
-    char *c[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
-    char numToPrint[2];
+    
     for (int i = 0; i < 8; i++) //WIDTH_T / PIECE_WIDTH
     {
         for (int j = 0; j < 8; j++) //HEIGHT_T / PIECE_HEIGHT
@@ -352,11 +374,7 @@ void drawBoard(int x, int y)
             else
                 drawSquare(x + i * TILE, y + j * TILE, TILE, BROWN);
         }
-        uintToBase(i+1, numToPrint, 10);
-        // Numeros
-        printIn(c[i], (MAX_WIDTH / CHAR_WIDTH) + 7 + i * (TILE / CHAR_WIDTH), LAST_LINE - 4, BROWN);
-        // Letras.
-        printIn(numToPrint, (MAX_WIDTH / CHAR_WIDTH) - 2, i * (TILE / CHAR_HEIGHT) + 3, BEIGE);
+        
     }
 }
 
@@ -364,15 +382,17 @@ static void drawPieces(int x, int y)
 {
     //extern void _drawFigure(char *toDraw, int color, int size, int x, int y);
     int piece, color;
-    for (int i = 0; i < 8; i++) //WIDTH_T / PIECE_WIDTH
+    for (int i = 0; i < 8; i++) 
     {
-        for (int j = 0; j < 8; j++) //HEIGHT_T / PIECE_HEIGHT
+        for (int j = 0; j < 8; j++) 
         {
             if (board[i][j].empty == FALSE)
             {
                 piece = board[i][j].piece.name;
                 color = board[i][j].piece.color;
-                _drawFigure(piecesBitmap(piece), color, 5, x + i * TILE, y + j * TILE);
+                //_drawFigure(piecesBitmap(piece), color, 5, x + i * TILE, y + j * TILE);
+                drawFigure(piece,color,i,j,x,y);
+               
             }
         }
     }
@@ -384,6 +404,9 @@ int attack(t_piece fromPiece, t_piece toPiece)
     t_tile toTile = getTile(toPiece.posX, toPiece.posY);
     if (fromPiece.player != toPiece.player)
     {
+        if(toPiece.name == KING || jaque == 3){
+            return 3;
+        }
         deleteFigure(toTile.piece);
         toTile.empty = TRUE; //dejo libre el casillero al que voy asi puedo moverme
         return 0;
@@ -392,13 +415,65 @@ int attack(t_piece fromPiece, t_piece toPiece)
         return 1;
 }
 
+//Buscamos al rey contrario
+static void findKing(int player, int *posXK , int *posYK, int *col){
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if(board[i][j].piece.name == KING && board[i][j].piece.player != player){
+                *posXK = i;
+                *posYK = j;
+                *col = board[i][j].piece.color;
+                return;
+            }
+        }            
+    }
+}
+
+//Prevee si puede hacer un jaque con el movimiento que esta haciendo
+static int prevJaque(t_piece fromPiece, int *posXK, int *posYK, int *col){
+    int posX , posY ,color, jaq;
+    findKing(fromPiece.player, &posX , &posY, &color);
+    *posXK = posX, *posYK = posY, *col = color;
+
+    switch (fromPiece.name)
+    {
+    case PAWN:
+        jaq = pawn(fromPiece, posX, posY);
+        break;
+    case TOWER:
+        jaq = tower(fromPiece, posX, posY);
+        break;
+    case BISHOP:
+        jaq = bishop(fromPiece, posX, posY);
+        break;
+    case QUEEN:
+        jaq = queen(fromPiece, posX, posY);
+        break;
+    case KING:
+        jaq = king(fromPiece, posX, posY);
+        break;
+    case HORSE:
+        jaq = horse(fromPiece, posX, posY);
+        break;
+
+    default:
+        break;
+    }
+    //si es cero, es que puede moverse y hacer un jaque
+    return jaq;
+}
+
 static void deleteFigure(t_piece piece)
 {
     if((piece.posX % 2== 0 && piece.posY %2 ==0) || (piece.posX % 2== 1 && piece.posY %2 ==1)){
-        _drawFigure(piecesBitmap(EMPTY), BEIGE, 5, 300 + piece.posX *TILE, piece.posY *TILE);
+        drawFigure(EMPTY,BEIGE,piece.posX,piece.posY, MAX_WIDTH, 0);
+        //_drawFigure(piecesBitmap(EMPTY), BEIGE, 5, MAX_WIDTH + piece.posX *TILE, piece.posY *TILE);
     }
     else{
-        _drawFigure(piecesBitmap(EMPTY), BROWN, 5, 300 + piece.posX * TILE, piece.posY * TILE);
+        drawFigure(EMPTY,BROWN,piece.posX,piece.posY, MAX_WIDTH, 0);
+        //_drawFigure(piecesBitmap(EMPTY), BROWN, 5, MAX_WIDTH + piece.posX * TILE, piece.posY * TILE);
     }   
 }
 
@@ -411,7 +486,19 @@ static void move(t_piece piece, int toX, int toY)
     piece.moved = TRUE;
     board[toX][toY].piece = piece;
     board[toX][toY].empty = FALSE;
-    _drawFigure(piecesBitmap(piece.name), piece.color, 5, 300+ toX * TILE, toY * TILE);    
+    drawFigure(piece.name,piece.color,piece.posX,piece.posY, MAX_WIDTH, 0);
+    //_drawFigure(piecesBitmap(piece.name), piece.color, 5, MAX_WIDTH+ toX * TILE, toY * TILE);    
+
+    int posXK, posYK, col;
+    int prev = prevJaque(piece, &posXK, &posYK, &col);
+
+    if(prev == 0){
+        // printIn("Jaque",300,LAST_LINE, YELLOW);
+        drawFigure(KING,col,posXK,posYK, MAX_WIDTH, 0);
+        //_drawFigure(piecesBitmap(KING), col , 5, MAX_WIDTH + posXK * TILE, posYK* TILE);
+        jaque++;
+        return;
+    }
 }
 
 //utilizamos para traer un casillero 
@@ -421,6 +508,7 @@ static t_tile getTile(int x, int y)
     return toReturn;
 }
 
+//Si esta en su extremo correspondiente el peon puede cambiarse a otra pieza
 void coronation(t_piece fromPiece, typePieces toName, int toX, int toY){
     deleteFigure(fromPiece);
     board[fromPiece.posX][fromPiece.posY].empty = TRUE;
@@ -429,7 +517,8 @@ void coronation(t_piece fromPiece, typePieces toName, int toX, int toY){
     fromPiece.moved = TRUE;
     board[toX][toY].piece = fromPiece;
     board[toX][toY].empty = FALSE;
-    _drawFigure(piecesBitmap(toName), fromPiece.color, 5, 300+ toX * TILE, toY * TILE);
+    drawFigure(toName,fromPiece.color,toX,toY, MAX_WIDTH, 0);
+    //_drawFigure(piecesBitmap(toName), fromPiece.color, 5, MAX_WIDTH+ toX * TILE, toY * TILE);
 }
 
 void enroque(int lon){
@@ -462,7 +551,7 @@ void enroque(int lon){
                 }
             }
     }
-        //para el jugador 2
+    //para el jugador 2
     else{
             if((board[0][7].empty == FALSE || board[7][7].empty == FALSE) && board[4][7].empty == FALSE){
                 if(tower1P2.moved == FALSE  && kingP2.moved == FALSE ){    
@@ -488,6 +577,40 @@ void enroque(int lon){
     }
 }
 
+int checkPeonAlPaso(t_piece piece, int toX, int toY){
+    t_tile neighbour1;
+    t_tile neighbour2;
+    t_tile aux = {{0,EMPTY,0,0,0,0},TRUE};
+    if(toX -1 < 0){
+        neighbour1 = aux;
+    }else{
+        neighbour1 = getTile(toX-1, toY);
+    }
+    if(toX + 1 > 7){
+        neighbour2 = aux;
+    }else{
+        neighbour2 = getTile(toX + 1, toY);
+    }
+    
+    t_tile neighbours[]={neighbour1,neighbour2};
+    for(int i = 0; i<2 && !skip_turn; i++){
+        t_tile neighbour = neighbours[i];
+        if(neighbour.empty == FALSE && neighbour.piece.name == PAWN){
+            //Se elimino el peon que sufre la jugada y se le avisa al espacio que queda libre
+            deleteFigure(piece);
+            t_tile fromTile = getTile(piece.posX, piece.posY);
+            fromTile.empty = TRUE;
+            //Se mueve obligatoriamente al peon contrario para que ejecute el peon al paso.
+            int where_to_moveY = fromTile.piece.color == WHITE ? neighbour.piece.posY - 1 : neighbour.piece.posY + 1;
+            move(neighbour.piece, piece.posX, where_to_moveY);
+            neighbour.empty = TRUE;
+            skip_turn = TRUE;
+            printIn("Peon al paso", 4,4, RED);
+        }
+    }
+    return skip_turn; //es decir que si se ejecuto el peon al paso debo decir que ese espacio no esta libre para que no se ejecute el move.
+}
+
 //vemos si estan vacios los casilleros entre medio hacia adelante y atras, dependiendo el movimiento
 //1 es que no pude moverme, 0 que si
 static int isEmptyP(int fromX, int fromY, int toX, int toY)
@@ -511,6 +634,7 @@ static int isEmptyN(int fromX, int fromY, int toX, int toY)
     }
     return 0;
 }
+
 //************* PIEZAS ***********//
 
 int pawn(t_piece fromPiece, int toX, int toY)
@@ -802,7 +926,7 @@ int horse(t_piece fromPiece, int toX, int toY)
     for (int j = 0; j < 8; j++)
     {
         if (toX == potentialMoves[j][0] && toY == potentialMoves[j][1] )
-        {;
+        {
             if (tile.empty != FALSE){
                 return 0;    
             }
@@ -814,36 +938,41 @@ int horse(t_piece fromPiece, int toX, int toY)
     }       
     return empty;
 }
-int checkPeonAlPaso(t_piece piece, int toX, int toY){
-    t_tile neighbour1;
-    t_tile neighbour2;
-    t_tile aux = {{0,EMPTY,0,0,0,0},TRUE};
-    if(toX -1 < 0){
-        neighbour1 = aux;
-    }else{
-        neighbour1 = getTile(toX-1, toY);
+void rotate(){
+    rotation ++;
+    drawBoard(MAX_WIDTH,0);
+    printCoord();
+    drawPieces(MAX_WIDTH,0);
+}
+void drawFigure(int piece, int color, int i, int j, int fromWhereX, int fromWhereY){
+    switch(rotation%4){
+        case 0: _drawFigure(piecesBitmap(piece), color, 5,fromWhereX + i * TILE, fromWhereY+ j * TILE);break;
+        case 1: _drawFigure(piecesBitmap(piece), color, 5,fromWhereX + j * TILE, fromWhereY+ i * TILE);break;
+        case 2: _drawFigure(piecesBitmap(piece), color, 5,fromWhereX + (7-i) * TILE, fromWhereY + (7-j) * TILE);break;
+        case 3: _drawFigure(piecesBitmap(piece), color, 5,fromWhereX + (7-j) * TILE, fromWhereY + (7-i) * TILE);break;
     }
-    if(toX + 1 > 7){
-        neighbour2 = aux;
-    }else{
-        neighbour2 = getTile(toX + 1, toY);
-    }
-    
-    t_tile neighbours[]={neighbour1,neighbour2};
-    for(int i = 0; i<2 && !skip_turn; i++){
-        t_tile neighbour = neighbours[i];
-        if(neighbour.empty == FALSE && neighbour.piece.name == PAWN){
-            //Se elimino el peon que sufre la jugada y se le avisa al espacio que queda libre
-            deleteFigure(piece);
-            t_tile fromTile = getTile(piece.posX, piece.posY);
-            fromTile.empty = TRUE;
-            //Se mueve obligatoriamente al peon contrario para que ejecute el peon al paso.
-            int where_to_moveY = fromTile.piece.color == WHITE ? neighbour.piece.posY - 1 : neighbour.piece.posY + 1;
-            move(neighbour.piece, piece.posX, where_to_moveY);
-            neighbour.empty = TRUE;
-            skip_turn = TRUE;
-            printIn("Peon al paso", 4,4, RED);
+     
+}
+void printCoord(){
+    char *c[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    char numToPrint[2];
+    for(int i = 0; i<8; i++){
+        uintToBase(i+1, numToPrint, 10);
+        switch(rotation%2){
+            case 0:
+              // Numeros
+                printIn(c[i], (MAX_WIDTH / CHAR_WIDTH) + 7 + i * (TILE / CHAR_WIDTH), LAST_LINE - 4, BROWN);
+                // Letras.
+                 printIn(numToPrint, (MAX_WIDTH / CHAR_WIDTH) - 2, i * (TILE / CHAR_HEIGHT) + 3, BEIGE);
+            break;
+            case 1:
+                     // Numeros
+                printIn(numToPrint, (MAX_WIDTH / CHAR_WIDTH) + 7 + i * (TILE / CHAR_WIDTH), LAST_LINE - 4, BROWN);
+                // Letras.
+                 printIn(c[i], (MAX_WIDTH / CHAR_WIDTH) - 2, i * (TILE / CHAR_HEIGHT) + 3, BEIGE);
+            break;
         }
+        
+      
     }
-    return skip_turn; //es decir que si se ejecuto elpeon al paso debo decir que ese espacio no esta libre para que no se ejecute el move.
 }

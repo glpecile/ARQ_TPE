@@ -95,9 +95,14 @@ void printPlayer(int number, int line)
 }
 void clearLine(int y)
 {
-    for (int i = 0; i < MAX_WIDTH / CHAR_WIDTH; i++)
+    // for (int i = 0; i < MAX_WIDTH / CHAR_WIDTH; i++)
+    // {
+    //     _drawRectangle(getHorizontalPixelPosition(i), getVerticalPixelPosition(y), CHAR_WIDTH, CHAR_HEIGHT, BLACK);
+    // }
+    char toDraw[] = "X";
+    for (int i = 0; i < MAX_WIDTH / CHAR_WIDTH - CHAR_WIDTH; i++)
     {
-        _drawRectangle(getHorizontalPixelPosition(i), getVerticalPixelPosition(y), CHAR_WIDTH, CHAR_HEIGHT, BLACK);
+        _drawFigure(toDraw, BLACK, CHAR_HEIGHT, getHorizontalPixelPosition(i), getVerticalPixelPosition(y));
     }
 }
 int getVerticalPixelPosition(int value)

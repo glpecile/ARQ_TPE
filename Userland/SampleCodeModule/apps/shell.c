@@ -187,6 +187,6 @@ void chess(int argSize, char *args[]){
     if(strcmp(args[0], "-c"))
         startGame(CONTINUE_GAME);
     if(strcmp(args[0], "-man"))
-        print("Comandos para jugar al ajedrez.\nmover: FROMXFROMY TOXTOY ,los movs son en mayuscula de origen a destino.\nenroque: E 2|3 \nen coronacion: ingresar nombre de pieza\n");
+        print("Comandos para jugar al ajedrez.\nmover: FROMXFROMY TOXTOY ,los movs son en mayuscula de origen a destino.\nenroque: e 2 o 3 \nen coronacion: ingresar nombre de pieza\n");
 }
 

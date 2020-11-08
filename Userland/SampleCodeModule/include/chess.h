@@ -43,7 +43,7 @@ typedef struct
 
 void startGame(int mode);
 int processGame(char *inputBuffer);
-void validMovePieces(int position[4]);
+int validMovePieces(int position[4]);
 void drawBoard(int x, int y);
 
 int attack(t_piece fromPiece, t_piece toPiece);
