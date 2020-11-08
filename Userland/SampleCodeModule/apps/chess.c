@@ -42,6 +42,8 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token);
 void startTimer(int player);
 void endTimer();
 void activeTimer();
+void pauseTimer();
+void resumeTimer();
 
 void startGame(int mode)
 {
@@ -61,6 +63,7 @@ void startGame(int mode)
         printIn("continue", 0,0,RED);
         printEntireLog();
         drawPieces(MAX_WIDTH, 0);
+        resumeTimer();
     }
     // Cambiar.
     printPlayer(currentPlayer, LAST_LINE);
@@ -73,22 +76,23 @@ void game() {
         {
             skip_turn = FALSE;
             quit = readPlayerInput(input, MAX_INPUT, ESC);
-            // 1 si se movio la pieza 0 si no. -1 cuando se termino el tiempo del jugador o murio el rey del otro jugador.
-            // if (processGame(input))
-            // {
-            //     (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
-            //     startTimer(currentPlayer);
-            // }
             
         }
         _clearScreen();
         if (quit == -1)
         {
             (currentPlayer == PLAYER1) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
+            putChar('\n');
+            endTimer();
         }
         if(quit == 3){
             // Se mato al rey enemigo.
             (currentPlayer == PLAYER2) ? print("Game Over. Player 2 has won!") : print("Game Over. Player 1 has won!");
+            putChar('\n');
+            endTimer();
+        }
+        if(quit == 1){
+            pauseTimer();
         }
 
 }
@@ -209,7 +213,12 @@ void endTimer()
     timer_player2 = 0;
     _timerFunc(&activeTimer, FALSE);
 }
-
+void pauseTimer(){
+    _timerFunc(&activeTimer, FALSE);
+}
+void resumeTimer(){
+    _timerFunc(&activeTimer, TRUE);
+}
 // Funcion pasada por parametro encargada de actualizar los contadores de tiempo.
 void activeTimer()
 {
@@ -248,13 +257,17 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
         else
         { // Se hace un update en el timer visual para que el jugador vea el tiempo que lleva.
         int time = (currentPlayer == PLAYER1 ? timer_player1 : timer_player2);
+        int timePlayer1;
+        int timePlayer2;
         if(time%TIMER_TICKS_PER_SEC==0)
         {
             // printInt(time/TIMER_TICKS_PER_SEC);
             updateTimerConsole(time/TIMER_TICKS_PER_SEC);
+             timePlayer1 = timer_player1 / TIMER_TICKS_PER_SEC;
+             timePlayer2 = timer_player2 / TIMER_TICKS_PER_SEC;
         }
-
-        if ((timer_player1 / TIMER_TICKS_PER_SEC) >= 60 || (timer_player2 / TIMER_TICKS_PER_SEC) >= 60)
+        int lastTimer = (currentPlayer == PLAYER2 ? timer_player1 : timer_player2);
+        if (timePlayer1 != 0 && timePlayer2!=0 && (time-lastTimer)/TIMER_TICKS_PER_SEC>= 60)
         {
             return -1;
         }}
@@ -265,7 +278,8 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
     {
         char aux[size];
         memcpy(aux, inputBuffer, size);
-        if (processGame(inputBuffer) == 1){
+        int processResult = processGame(inputBuffer);
+        if ( processResult == 1){
                 printLogLine(aux, currentPlayer);
                 endTimer(currentPlayer);
                 if(!skip_turn)
@@ -273,10 +287,14 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
                 startTimer(currentPlayer);
                 printPlayer(currentPlayer, LAST_LINE);
                 printEntireLog();
-            } else if (processGame == 0){
+            } else if (processResult == 0)
+            {
                 clearLine(LAST_LINE);
                 printPlayer(currentPlayer, LAST_LINE);
                 resetCursor();
+            } else // == 3 : Hacke mate.
+            { 
+                return 3;
             }
     }
     
