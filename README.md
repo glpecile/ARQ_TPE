@@ -12,7 +12,7 @@
 # Manual de Usuario
 Sistema operativo básico basado en Barebonesx64 por RowDaBoat. Para poder correr el sistema se debe tener instalado qemu-system a fin de visualizar y docker instalado para el compilado con el contenedor `agodio/itba-so:1.0` dado por la cátedra. Al tener dichos requisitos se debe compilar desde docker y luego ejecutar usando:
 1. La primera vez que se accede ```cd Toolchain``` y luego ```make all```. Este paso solo se debe realizar la primera vez que se descarga el repositorio.
-2. Ahora resta una úntima compilación del proyecto volviiendo al directorio anterior y utilizando ```make all```.
+2. Ahora resta una úntima compilación del proyecto volviendo al directorio anterior y utilizando ```make all```.
 3. Por último resta correr el sistema utilizando qemu con el comando ```run.sh```.
 
 ## Shell
@@ -25,7 +25,7 @@ Dispone de las siguientes funcionalidades:
 - **invalidOpCodeException**: Verifica el funcionamiento correcto de la excepción de tipo operación de código inválido.
 - **invalidZeroDivisionException**: Verifica el funcionamiento correcto de la excepción de tipo división por cero.
 - **chess**: Despliega juego de ajedrez en formato gráfico humano a humano. Al escribir ```chess -man``` se despliega un menú con las reglas del juego. Además, se dispone de una opción para continuar una partida existente usando ```chess -c```. 
-- **clear**: Limpia la pantalla de los comandos ingreados.
+- **clear**: Limpia la pantalla de los comandos ingresados.
 
 ## Chess
 ¡Juegue una nueva partida o reanude su partida existente de ajedrez en formato gráfico por comando de línea! 
