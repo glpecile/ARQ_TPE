@@ -41,14 +41,14 @@ Dispone de las siguientes funcionalidades:
 
 ***int 80h***
 
-| %rdi | System Call      | %rsi              | %rdx              | %rcx              | %r8                 | %r9    |
-| ---- | ---------------  | ----------------- | ----------------- | ----------------- | ------------------- | -----  |
-| 0    | timerFunc        | void (*f)         | int toDo          |                   |                     |        |
-| 1    | getTime          | int descriptor    |                   |                   |                     |        |
-| 2    | drawFigure       | char *toDraw      | int color         | int size          | int x               |        |
-| 3    | sWrite           | char * string     | uint8_t length    | t_colour bgColour | t_colour fontColour | int y  |
-| 4    | sGetChar         |                   |                   |                   |                     |        |
-| 5    | setCursor        | unsigned int x    | unsigned int y    |                   |                     |        |
-| 6    | clearScreen      |                   |                   |                   |                     |        |
-| 7    | getPixelWidth()  |                   |                   |                   |                     |        |
-| 8    | getPixelWidth()  |                   |                   |                   |                     |        |
+| %rdi | System Call           | %rsi              | %rdx              | %rcx              | %r8                 | %r9    |
+| ---- | --------------------  | ----------------- | ----------------- | ----------------- | ------------------- | -----  |
+| 0    | void timerFunc        | void (*f)         | int toDo          |                   |                     |        |
+| 1    | uint8_t getTime       | int descriptor    |                   |                   |                     |        |
+| 2    | void drawFigure       | char *toDraw      | int color         | int size          | int x               |        |
+| 3    | uint64_t sWrite       | char * string     | uint8_t length    | t_colour bgColour | t_colour fontColour | int y  |
+| 4    | char sGetChar         |                   |                   |                   |                     |        |
+| 5    | void setCursor        | unsigned int x    | unsigned int y    | int color         |                     |        |
+| 6    | void clearScreen      |                   |                   |                   |                     |        |
+| 7    | void getPixelWidth()  |                   |                   |                   |                     |        |
+| 8    | void getPixelWidth()  |                   |                   |                   |                     |        |
