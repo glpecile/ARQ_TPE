@@ -9,8 +9,8 @@ char * piecesBitmap(int c);
 typedef enum
 {
     PAWN = 0,
-    TOWER = 1,
-    HORSE = 2,
+    ROOK = 1,
+    KNIGHT = 2,
     BISHOP = 3,
     QUEEN = 4,
     KING = 5,

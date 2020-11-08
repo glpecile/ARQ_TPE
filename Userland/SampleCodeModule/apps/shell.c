@@ -34,7 +34,7 @@ void loadCommands()
     loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess, "chess", "Play a 1v1 match against a friend or yourself!.\nType 'chess -c' to continue the previous match.\nType 'chess -man' to display instructions.");
+    loadCommand(&chess, "chess", "Play a 1v1 match against a friend or yourself!.\nType 'chess -c' to continue the previous match.\nType 'chess -man' to display instructions.\n");
     loadCommand(&_clearScreen, "clear", "Clears the whole screen.\n");
 }
 
@@ -200,9 +200,10 @@ void chess(int argSize, char *args[])
     if (strcmp(args[0], "-man"))
     {
         printWithColor("CHESS MANUAL.\n", BEIGE);
-        print("- Valid moves: 'FROMX''FROMY' 'TOX''TOY', caps lock should be enabled and the move should be valid to end your turn.\n");
+        // Separado en más llamados a print ya que al usar un string muy largo genera errores.
+        print("- Valid moves: 'FROM_X''FROM_Y' 'TO_X''TO_Y', caps lock should be enabled and the move should be valid to end your turn.\n");
         print("- Castling: short 'e 2' or 'e 3'.\n");
-        print("- Coronation: Enter piece name.\n");
+        print("- Coronation: By default a pawn transforms into a queen.\n");
         print("- Rotate: 'r' to rotate 90 degrees the board.\n");
         print("- Exit: 'ESC' to leave the game.\n");
     }

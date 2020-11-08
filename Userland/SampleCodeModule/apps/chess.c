@@ -13,7 +13,7 @@
 
 t_tile board[8][8];
 char input[MAX_INPUT];
-char *piecesCoronation[4] = {"queen", "tower", "bishop", "horse"};
+char *piecesCoronation[4] = {"queen", "rook", "bishop", "knight"};
 static typePieces toCoronation = 4;
 static int jaque = 0;
 
@@ -70,7 +70,7 @@ void startGame(int mode)
     // Cambiar.
     printPlayer(currentPlayer, LAST_LINE);
     game();
-    _setCursor(0,LAST_LINE,GREEN);
+    _setCursor(0, LAST_LINE, GREEN);
 }
 void game()
 {
@@ -177,8 +177,8 @@ static int fetchMovement(t_piece piece, int toX, int toY)
     case PAWN:
         mov = pawn(piece, toX, toY);
         break;
-    case TOWER:
-        mov = tower(piece, toX, toY);
+    case ROOK:
+        mov = rook(piece, toX, toY);
         break;
     case BISHOP:
         mov = bishop(piece, toX, toY);
@@ -189,8 +189,8 @@ static int fetchMovement(t_piece piece, int toX, int toY)
     case KING:
         mov = king(piece, toX, toY);
         break;
-    case HORSE:
-        mov = horse(piece, toX, toY);
+    case KNIGHT:
+        mov = knight(piece, toX, toY);
         break;
 
     default:
@@ -325,22 +325,22 @@ static void initializeBoard()
     //Se ponen las torres
     board[0][0].empty = FALSE;
     board[0][7].empty = FALSE;
-    board[0][0].piece = initializePiece(0, 0, TOWER, WHITE, PLAYER1);
-    board[0][7].piece = initializePiece(0, 7, TOWER, BLACK, PLAYER2);
+    board[0][0].piece = initializePiece(0, 0, ROOK, WHITE, PLAYER1);
+    board[0][7].piece = initializePiece(0, 7, ROOK, BLACK, PLAYER2);
     board[7][0].empty = FALSE;
     board[7][7].empty = FALSE;
-    board[7][0].piece = initializePiece(7, 0, TOWER, WHITE, PLAYER1);
-    board[7][7].piece = initializePiece(7, 7, TOWER, BLACK, PLAYER2);
+    board[7][0].piece = initializePiece(7, 0, ROOK, WHITE, PLAYER1);
+    board[7][7].piece = initializePiece(7, 7, ROOK, BLACK, PLAYER2);
 
     //Se ponen los caballos
     board[1][0].empty = FALSE;
     board[1][7].empty = FALSE;
-    board[1][0].piece = initializePiece(1, 0, HORSE, WHITE, PLAYER1);
-    board[1][7].piece = initializePiece(1, 7, HORSE, BLACK, PLAYER2);
+    board[1][0].piece = initializePiece(1, 0, KNIGHT, WHITE, PLAYER1);
+    board[1][7].piece = initializePiece(1, 7, KNIGHT, BLACK, PLAYER2);
     board[6][0].empty = FALSE;
     board[6][7].empty = FALSE;
-    board[6][0].piece = initializePiece(6, 0, HORSE, WHITE, PLAYER1);
-    board[6][7].piece = initializePiece(6, 7, HORSE, BLACK, PLAYER2);
+    board[6][0].piece = initializePiece(6, 0, KNIGHT, WHITE, PLAYER1);
+    board[6][7].piece = initializePiece(6, 7, KNIGHT, BLACK, PLAYER2);
 
     //Se ponen los alfiles
     board[2][0].empty = FALSE;
@@ -432,7 +432,7 @@ int attack(t_piece fromPiece, t_piece toPiece)
     t_tile toTile = getTile(toPiece.posX, toPiece.posY);
     if (fromPiece.player != toPiece.player)
     {
-        if (toPiece.name == KING || jaque == 3)
+        if (toPiece.name == KING) //  || jaque == 3 falta implementar.
         {
             return 3;
         }
@@ -474,8 +474,8 @@ static int prevJaque(t_piece fromPiece, int *posXK, int *posYK, int *col)
     case PAWN:
         jaq = pawn(fromPiece, posX, posY);
         break;
-    case TOWER:
-        jaq = tower(fromPiece, posX, posY);
+    case ROOK:
+        jaq = rook(fromPiece, posX, posY);
         break;
     case BISHOP:
         jaq = bishop(fromPiece, posX, posY);
@@ -486,8 +486,8 @@ static int prevJaque(t_piece fromPiece, int *posXK, int *posYK, int *col)
     case KING:
         jaq = king(fromPiece, posX, posY);
         break;
-    case HORSE:
-        jaq = horse(fromPiece, posX, posY);
+    case KNIGHT:
+        jaq = knight(fromPiece, posX, posY);
         break;
 
     default:
@@ -561,35 +561,35 @@ void enroque(int lon)
 {
     //solo si las torres y la reina estan en posiciones iniciales
     //lon sirve por si aun no se movieron las 2 torres y el user elije que enroque hacer
-    t_piece tower1P1 = board[0][0].piece, tower2P1 = board[7][0].piece, kingP1 = board[4][0].piece; //piezas del jug 1
-    t_piece tower1P2 = board[0][7].piece, tower2P2 = board[7][7].piece, kingP2 = board[4][7].piece; //piezas del jug 2
+    t_piece ROOK1P1 = board[0][0].piece, ROOK2P1 = board[7][0].piece, kingP1 = board[4][0].piece; //piezas del jug 1
+    t_piece ROOK1P2 = board[0][7].piece, ROOK2P2 = board[7][7].piece, kingP2 = board[4][7].piece; //piezas del jug 2
 
     int empty = -1;
     int fromX, fromY;
 
     if ((board[0][0].empty == FALSE || board[7][0].empty == FALSE) && board[4][0].empty == FALSE)
     {
-        if (tower1P1.moved == FALSE && kingP1.moved == FALSE)
+        if (ROOK1P1.moved == FALSE && kingP1.moved == FALSE)
         {
             //vemos de izquierda a derecha, torre 1 es en A1 y torre 2 es en H1
             if (lon == 2)
             { //enroque corto
-                fromX = tower2P1.posX;
-                fromY = tower2P1.posY;
-                empty = tower(tower2P1, fromX + lon, fromY);
+                fromX = ROOK2P1.posX;
+                fromY = ROOK2P1.posY;
+                empty = rook(ROOK2P1, fromX + lon, fromY);
                 if (empty == FALSE)
                 {
-                    move(tower2P1, 7 - lon, 0);
+                    move(ROOK2P1, 7 - lon, 0);
                     move(kingP1, 4 + 2, 0);
                 }
             }
             if (lon == 3)
             { //enroque largo
-                empty = tower(tower1P1, 7 - lon, 0);
+                empty = rook(ROOK1P1, 7 - lon, 0);
 
                 if (empty == FALSE)
                 {
-                    move(tower1P1, 0 + lon, 0);
+                    move(ROOK1P1, 0 + lon, 0);
                     move(kingP1, 4 - 2, 0);
                 }
             }
@@ -600,26 +600,26 @@ void enroque(int lon)
     {
         if ((board[0][7].empty == FALSE || board[7][7].empty == FALSE) && board[4][7].empty == FALSE)
         {
-            if (tower1P2.moved == FALSE && kingP2.moved == FALSE)
+            if (ROOK1P2.moved == FALSE && kingP2.moved == FALSE)
             {
                 //vemos de izquierda a derecha, torre 1 es en A8 y torre 2 es en H8
                 if (lon == 2)
                 { //enroque corto
-                    empty = tower(tower2P2, 7 - lon, 7);
+                    empty = rook(ROOK2P2, 7 - lon, 7);
 
                     if (empty == FALSE)
                     {
-                        move(tower2P2, 7 - lon, 7);
+                        move(ROOK2P2, 7 - lon, 7);
                         move(kingP2, 4 + 2, 7);
                     }
                 }
                 if (lon == 3)
                 { //enroque largo
-                    empty = tower(tower1P2, 0 + lon, 7);
+                    empty = rook(ROOK1P2, 0 + lon, 7);
 
                     if (empty == FALSE)
                     {
-                        move(tower1P2, 0 + lon, 7);
+                        move(ROOK1P2, 0 + lon, 7);
                         move(kingP2, 4 - 2, 7);
                     }
                 }
@@ -818,7 +818,7 @@ int pawn(t_piece fromPiece, int toX, int toY)
     return empty;
 }
 
-int tower(t_piece fromPiece, int toX, int toY)
+int rook(t_piece fromPiece, int toX, int toY)
 {
     int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;
@@ -976,7 +976,7 @@ int king(t_piece fromPiece, int toX, int toY)
 
     if ((toY == fromY && (toX == fromX + 1 || toX == fromX - 1)) || (toX == fromX && (toY == fromY + 1 || toY == fromY - 1)))
     {
-        empty = tower(fromPiece, toX, toY);
+        empty = rook(fromPiece, toX, toY);
     }
     else
     {
@@ -995,7 +995,7 @@ int queen(t_piece fromPiece, int toX, int toY)
 
     if (toX == fromX || fromY == toY)
     {
-        empty = tower(fromPiece, toX, toY);
+        empty = rook(fromPiece, toX, toY);
     }
     else
     {
@@ -1008,7 +1008,7 @@ int queen(t_piece fromPiece, int toX, int toY)
     return empty;
 }
 
-int horse(t_piece fromPiece, int toX, int toY)
+int knight(t_piece fromPiece, int toX, int toY)
 {
     int fromX = fromPiece.posX;
     int fromY = fromPiece.posY;

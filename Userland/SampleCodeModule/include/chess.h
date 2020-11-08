@@ -50,10 +50,10 @@ void coronation(t_piece fromPiece, typePieces toName, int toX, int toY);
 
 // Pecas.
 int pawn(t_piece fromPiece, int toX, int toY);
-int tower(t_piece fromPiece, int toX, int toY);
+int rook(t_piece fromPiece, int toX, int toY);
 int bishop(t_piece fromPiece, int toX, int toY);
 int king(t_piece fromPiece, int toX, int toY);
 int queen(t_piece fromPiece, int toX, int toY);
-int horse(t_piece fromPiece, int toX, int toY);
+int knight(t_piece fromPiece, int toX, int toY);
 
 #endif
