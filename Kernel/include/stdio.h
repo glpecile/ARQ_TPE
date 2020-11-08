@@ -9,7 +9,7 @@
 /**
  * Define una nueva posicón valida para el cursor y lo vuelve a dibujar.
 */
-void setCursor(unsigned int new_x, unsigned int new_y);
+void setCursor(unsigned int new_x, unsigned int new_y, int color);
 /**
  * Dibuja un caracter en la pantalla en base a la posición del cursor.
 */

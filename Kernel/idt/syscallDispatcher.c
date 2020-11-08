@@ -28,8 +28,8 @@ uint64_t syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
     case 4:
         return sGetChar();
     case 5:
-        // setCursor(unsigned int new_x, unsigned int new_y);
-        setCursor(rsi, rdx);
+        // setCursor(unsigned int new_x, unsigned int new_y, int color);
+        setCursor(rsi, rdx, rcx);
         return 1;
     case 6:
         // void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color);

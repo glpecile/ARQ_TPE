@@ -76,10 +76,10 @@ void printreg(uint64_t *reg)
 
 void zero_division()
 {
-	printError("ERROR DIVISION POR CERO.\n");
+	printError("ERROR DIVISION BY ZERO EXCEPTION.\n");
 }
 
 void invalid_opcode()
 {
-	printError("ERROR CODIGO DE OPERACION INVALIDO.\n");
+	printError("ERROR INVALID OPERATION CODE EXCEPTION.\n");
 }

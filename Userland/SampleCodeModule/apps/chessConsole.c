@@ -19,13 +19,13 @@ static int currentSize = 0;
 void printIn(char *string, int x, int y, int color)
 {
     int aux_x = currentPos.x; 
-    _setCursor(x, y);
+    _setCursor(x, y,BLACK);
     printWithColor(string, color);
-    _setCursor(aux_x, LAST_LINE);
+    _setCursor(aux_x, LAST_LINE,BLACK);
 }
 void initializeCursor()
 {
-    _setCursor(0, LAST_LINE);
+    _setCursor(0, LAST_LINE,BLACK);
     currentPos.x = 10;
     currentPos.y = LAST_LINE;
 }
@@ -83,14 +83,14 @@ void addMoveToLog(char *move, int player)
     memcpy(log[currentSize], move, 6);
     playerOrder[currentSize++] = player;
 }
+
 // Se mueven todos los log una posicion para "arriba" eliminando al primer log ingresado.
 // Esto se hace para el estilo de scroll up.
-
 void updateTimerConsole(int time)
 {
     char aux[30];
     uintToBase(time, aux, 10);
-    printIn(aux, (MAX_WIDTH/CHAR_WIDTH) + 5, LAST_LINE, RED);
+    printIn(aux, (MAX_WIDTH/CHAR_WIDTH) + 5, LAST_LINE, YELLOW);
 }
 
 void displayChar(char c) {
@@ -112,7 +112,7 @@ void printEntireLog(){
     resetCursor();
 }
 void resetCursor(){
-    _setCursor(10, LAST_LINE);
+    _setCursor(10, LAST_LINE,BLACK);
     currentPos.x = 10;
     currentPos.y = LAST_LINE;
 }

@@ -28,7 +28,7 @@ typedef struct{
     char *description;
 }t_command;
 
-extern void _setCursor(int x, int y);
+extern void _setCursor(int x, int y, int color);
 
 extern void _clearScreen();
 

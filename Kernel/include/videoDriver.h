@@ -21,7 +21,7 @@ void drawPixel(int x, int y, int color);
 /**
  * Dibuja el cursor una posición determinada en en la pantalla.
  */
-void drawCursor(int x, int y, int blink);
+void drawCursor(int x, int y, int blink, int color);
 /**
  *  Dibuja un caracter de tamaño, color y posición determinada en pantalla.
  */
