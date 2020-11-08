@@ -152,9 +152,9 @@ void displayChar(char c) {
         currentPos.x-=1;
     }else{
         currentPos.x+=1;
-    }
-    
+    }    
 }
+
 void printEntireLog(){
     char aux[30];
     uintToBase(currentSize, aux, 10);

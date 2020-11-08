@@ -31,10 +31,10 @@ void intializeShell()
 
 void loadCommands()
 {
-    loadCommand(&getRegs, "inforeg", "Displays all the information regarding the registers.\n");
     loadCommand(&help, "help", "Displays the description of all functions available.\n");
-    loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
+    loadCommand(&getRegs, "inforeg", "Displays all the information regarding the registers.\n");
     loadCommand(&printmem, "printmem", "Makes a 32 Bytes memory dump to screen from the address passed by argument.\n");
+    loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
     loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\nType -man to instructions");
@@ -71,7 +71,6 @@ int readInput(char *inputBuffer, int maxSize, char token)
     }
     // Ponemos la marca de final al string.
     inputBuffer[size++] = 0;
-    // putChar('\n');
     return c != token;
 }
 
@@ -90,7 +89,6 @@ int processInput(char *inputBuffer)
         if (strcmp(args[0], commands[i].name))
         {
             commands[i].command(argSize - 1, args + 1);
-            // No funciona correctamente el retorno de time.
             return 1;           
         }
     }

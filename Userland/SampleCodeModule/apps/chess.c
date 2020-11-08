@@ -68,7 +68,6 @@ void startGame(int mode)
     // Cambiar.
     printPlayer(currentPlayer, LAST_LINE);
     game();
-    
 }
 void game() {
     int quit = 0;
@@ -257,17 +256,14 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
         else
         { // Se hace un update en el timer visual para que el jugador vea el tiempo que lleva.
         int time = (currentPlayer == PLAYER1 ? timer_player1 : timer_player2);
-        int timePlayer1;
-        int timePlayer2;
         if(time%TIMER_TICKS_PER_SEC==0)
         {
             // printInt(time/TIMER_TICKS_PER_SEC);
             updateTimerConsole(time/TIMER_TICKS_PER_SEC);
-             timePlayer1 = timer_player1 / TIMER_TICKS_PER_SEC;
-             timePlayer2 = timer_player2 / TIMER_TICKS_PER_SEC;
+             
         }
         int lastTimer = (currentPlayer == PLAYER2 ? timer_player1 : timer_player2);
-        if (timePlayer1 != 0 && timePlayer2!=0 && (time-lastTimer)/TIMER_TICKS_PER_SEC>= 60)
+        if ((time/TIMER_TICKS_PER_SEC)-lastTimer >= 60)
         {
             return -1;
         }}
@@ -283,7 +279,8 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
                 printLogLine(aux, currentPlayer);
                 endTimer(currentPlayer);
                 if(!skip_turn)
-                    (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):currentPlayer;
+                    (currentPlayer==PLAYER1)?(currentPlayer=PLAYER2):(currentPlayer=PLAYER1);
+                printPlayer(currentPlayer,4);
                 startTimer(currentPlayer);
                 printPlayer(currentPlayer, LAST_LINE);
                 printEntireLog();
@@ -613,7 +610,7 @@ int checkPeonAlPaso(t_piece piece, int toX, int toY){
     t_tile neighbours[]={neighbour1,neighbour2};
     for(int i = 0; i<2 && !skip_turn; i++){
         t_tile neighbour = neighbours[i];
-        if(neighbour.empty == FALSE && neighbour.piece.name == PAWN){
+        if(neighbour.empty == FALSE && neighbour.piece.name == PAWN && neighbour.piece.player != piece.player){
             //Se elimino el peon que sufre la jugada y se le avisa al espacio que queda libre
             deleteFigure(piece);
             t_tile fromTile = getTile(piece.posX, piece.posY);
@@ -623,7 +620,6 @@ int checkPeonAlPaso(t_piece piece, int toX, int toY){
             move(neighbour.piece, piece.posX, where_to_moveY);
             neighbour.empty = TRUE;
             skip_turn = TRUE;
-            printIn("Peon al paso", 4,4, RED);
         }
     }
     return skip_turn; //es decir que si se ejecuto el peon al paso debo decir que ese espacio no esta libre para que no se ejecute el move.
@@ -697,7 +693,6 @@ int pawn(t_piece fromPiece, int toX, int toY)
                 empty = isEmptyP(fromX, fromY, toX, toY);
                 //aca se hace la verificacion del peon al paso y se elimina esta misma pieza si tengo al lado un peon enemigo (izq y derecha)
                 if(empty == 0){ //el espacio debe estar vacio.
-                     printIn("Chequeando al paso", 5,4, RED);
                     empty = checkPeonAlPaso(fromPiece,toX,toY);
                 }
             }
@@ -748,7 +743,6 @@ int pawn(t_piece fromPiece, int toX, int toY)
                 {//miro si los 2 tile de las filas adelante estan vacias
                     empty = isEmptyN(fromX, fromY, toX, toY);
                     if(empty==0){ //el espacio debe estar vacio.
-                        printIn("Chequeando al paso", 5,4, RED);
                         empty = checkPeonAlPaso(fromPiece,toX,toY);
                     }
                     return empty;
