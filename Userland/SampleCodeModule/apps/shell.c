@@ -37,8 +37,8 @@ void loadCommands()
     loadCommand(&printCurrentTime, "time", "Displays the current time and date.\n");
     loadCommand(&invalidOpCodeException, "invalidOpCodeException", "Displays exception of an invalid operation code.\n");
     loadCommand(&invalidZeroDivisionException, "invalidZeroDivisionException", "Displays exception of an invalid division by zero.\n");
-    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!. Type -c to continue the previous match.\nType -man to instructions");
-    loadCommand(&_clearScreen, "clear", "Clears the whole screen.");
+    loadCommand(&chess,"chess", "Play a 1v1 match against a friend or yourself!.\nType 'chess -c' to continue the previous match.\nType 'chess -man' to display instructions.");
+    loadCommand(&_clearScreen, "clear", "Clears the whole screen.\n");
 }
 
 void loadCommand(void (*fn)(), char *name, char *desc)
@@ -153,13 +153,18 @@ void printCurrentTime()
 void printmem(int argSize, char *args[])
 {
     uint64_t num = hexaToInt(args[0]);
+    if (argSize < 1 || num == 0)
+    {
+        print("Invalid argument. Try again.\n");
+        return;
+    }
     char toPrint[32];
-
+    uint8_t *mem_address = (uint8_t *)num;
     for (int i = 0; i < 32; i++)
     {
-        uintToBase((num + i), toPrint, 16);
-        printHex(toPrint[i]);
-        putChar(' ');
+            uintToBase(mem_address[i], toPrint, 16);
+            print(toPrint);
+            putChar(' ');
     }
     putChar('\n');
 }

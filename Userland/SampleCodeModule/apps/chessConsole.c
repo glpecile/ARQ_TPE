@@ -8,12 +8,9 @@ typedef struct
     int y;
 } t_currentPos;
 static t_currentPos currentPos;
-/**
- * LIFO para los log de los movimientos. 
- * Nunca se popean porque es necesario que 
- * queden guardados los log para usarlos mas tarde.
- */
-static char *log[LAST_LINE];
+
+static char log[LAST_LINE][7];
+static int playerOrder[LAST_LINE];
 static int currentSize = 0;
 /**
  *  Imprime en una posicion y color determinado de la pantalla,
@@ -32,49 +29,16 @@ void initializeCursor()
     currentPos.x = 10;
     currentPos.y = LAST_LINE;
 }
-
-// idea: divide output de error en dos. Descartada.
-// void printCommand(char *string)
-// {
-//     int length = strlen(string);
-//     int diff = length - THRESHOLD;
-//     char toPrint[2];
-//     numToStr(diff, toPrint, 2);
-//     print(toPrint);
-//     if (diff <= 0)
-//     {
-//         printIn(string, PLAYER_LENGTH, LAST_LINE, WHITE);
-//     }
-//     else
-//     {
-//         char str1[length - diff + 1];
-//         char str2[diff + 1];
-//         memcpy(str1, string, THRESHOLD);
-//         memcpy(str2, string + THRESHOLD, diff);
-//         str1[diff] = '\0';
-//         str2[length - diff] = '\0';
-//         print(str1);
-//         currentPos.y += CHAR_HEIGHT;
-//         printIn(str2, 0, currentPos.y, WHITE);
-//     }
-// }
+void initializeLog(){
+    currentSize = 0;
+}
 
 // Imprime una linea nueva de comando en el log
 void printLogLine(char *move, int player)
 {
     clearLine(LAST_LINE);
     addMoveToLog(move, player);
-    int i = 0;
-    char *toPrint;
-    while (i < currentSize)
-    {
-        // print("se entro al while...");
-        toPrint = getNextMove(i);                     // Consigue el movimiento a imprimir.
-        printPlayer(((i + 2) % 2) + player, LAST_LINE - i-1); // Imprime al jugador del movimiento.
-        printIn(toPrint, 10, LAST_LINE - i -1, WHITE);         // Imprime el movimiento.
-        i++;
-    }
-    
+    printEntireLog();
 }
 void printPlayer(int number, int line)
 {
@@ -116,29 +80,12 @@ int getHorizontalPixelPosition(int value)
 // Se agrega un nuevo movimiento al log.
 void addMoveToLog(char *move, int player)
 {
-    // print("Se agrego...");
-    // if (currentSize != 0 && currentSize % LAST_LINE == 0)
-    // {
-    //     moveUpLog();
-    //     // print("se hace el moveUpLog()...");
-    // }
-    log[currentSize++] = move; // Guardamos el movimiento.
+    memcpy(log[currentSize], move, 6);
+    playerOrder[currentSize++] = player;
 }
 // Se mueven todos los log una posicion para "arriba" eliminando al primer log ingresado.
 // Esto se hace para el estilo de scroll up.
-void moveUpLog()
-{
-    for (int i = 1; i < HEIGHT; i++)
-    {
-        log[i - 1] = log[i];
-    }
-    currentSize--;
-}
-char *getNextMove(int i)
-{
-    // print("getting move...");
-    return log[currentSize - 1 - i];
-}
+
 void updateTimerConsole(int time)
 {
     char aux[30];
@@ -156,12 +103,13 @@ void displayChar(char c) {
 }
 
 void printEntireLog(){
-    char aux[30];
-    uintToBase(currentSize, aux, 10);
-    printIn(aux, 2, 2, RED);
     for(int i = 0; i<currentSize; i++){
-        printIn(log[i],0,i,RED);
+        char aux1[2];
+        uintToBase(playerOrder[currentSize - 1 - i], aux1, 10);
+        printIn(aux1, 0, LAST_LINE - i -1 , GREEN);
+        printIn(log[currentSize-1-i], 5, LAST_LINE - i -1, WHITE);         // Imprime el movimiento.
     }
+    resetCursor();
 }
 void resetCursor(){
     _setCursor(10, LAST_LINE);

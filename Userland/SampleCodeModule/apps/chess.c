@@ -56,11 +56,11 @@ void startGame(int mode)
         rotation = 4;
         initializeCursor();
         initializeBoard();
+        initializeLog();
         drawPieces(MAX_WIDTH, 0);
         currentPlayer = PLAYER1;
         startTimer(currentPlayer);
     }else if (mode == CONTINUE_GAME){
-        printIn("continue", 0,0,RED);
         printEntireLog();
         drawPieces(MAX_WIDTH, 0);
         resumeTimer();
@@ -147,7 +147,9 @@ int validMovePieces(int position[4])
     // X son columnas e Y son las filas.
     t_tile space = board[fromX][fromY];
     int empty = -1;
-    
+    if(currentPlayer != space.piece.player){
+        return FALSE;
+    }
     if (space.empty || (fromX == toX && fromY == toY)) 
         return 0; //"No piece to access. Please move an actual piece." || "Invalid move. Same position.";
     empty = fetchMovement(space.piece, toX, toY); // Liberamos la pos de from
@@ -163,9 +165,7 @@ static int fetchMovement(t_piece piece, int toX, int toY)
 {
     int mov = -1;
     //Verifico que la pieza seleccionada sea del jugador del turno. En caso contrario se retorna que no puede hacerse un movimiento.
-    if(currentPlayer != piece.player){
-        return FALSE;
-    }
+    
     switch (piece.name)
     {
     case PAWN:
@@ -283,7 +283,6 @@ int readPlayerInput(char *inputBuffer, int maxSize, char token)
                 printPlayer(currentPlayer,4);
                 startTimer(currentPlayer);
                 printPlayer(currentPlayer, LAST_LINE);
-                printEntireLog();
             } else if (processResult == 0)
             {
                 clearLine(LAST_LINE);

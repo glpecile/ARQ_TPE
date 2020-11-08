@@ -27,4 +27,5 @@ int getHorizontalPixelPosition(int value);
 void displayChar(char c); 
 void printEntireLog();
 void resetCursor();
+void intializeLog();
 #endif
