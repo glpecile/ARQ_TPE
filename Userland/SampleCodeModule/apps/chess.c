@@ -72,6 +72,7 @@ void startGame(int mode)
     game();
     _setCursor(0, LAST_LINE, GREEN);
 }
+
 void game()
 {
     int quit = 0;
