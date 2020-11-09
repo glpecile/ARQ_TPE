@@ -4,6 +4,7 @@
  * pero debe poder dibujar una figura genérica si se lo requiere.
  */
 #include <chessPieces.h>
+
 // Arreglar, problema con matriz.
 static char *__pieces_bitmap__[] = {
     // 0: Peon.
@@ -17,7 +18,10 @@ static char *__pieces_bitmap__[] = {
     // 4: Reina.
     "______XX______\n_____XXXX_____\n______XX______\n____XXXXXX____\n___X_XXXX_X___\n____XXXXXX____\n______XX______\n______XX______\n_____XXXX_____\n_____XXXX_____\n____XXXXXX____\n___XXXXXXXX___\n__XXXXXXXXXX__\n______________",
     // 5: Rey.
-    "______________\n______XX______\n____XXXXXX____\n______XX______\n___XXXXXXXX___\n____X_XX_X____\n_____XXXX_____\n______XX______\n_____XXXX_____\n_____XXXX_____\n___XXXXXXXX___\n___XXXXXXXX___\n__XXXXXXXXXX__\n______________"};
+    "______________\n______XX______\n____XXXXXX____\n______XX______\n___XXXXXXXX___\n____X_XX_X____\n_____XXXX_____\n______XX______\n_____XXXX_____\n_____XXXX_____\n___XXXXXXXX___\n___XXXXXXXX___\n__XXXXXXXXXX__\n______________",
+    // 6: Vacio.
+    "XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX\nXXXXXXXXXXXXXX"};
+
 char *piecesBitmap(int c)
 {
     return __pieces_bitmap__[c];

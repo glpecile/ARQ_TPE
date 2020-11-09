@@ -9,3 +9,6 @@
 
 #Object files
 *.o
+
+#Drive backup files
+*.ini

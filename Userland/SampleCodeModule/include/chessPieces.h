@@ -3,9 +3,20 @@
  */ 
 #ifndef __chessPieces_H_
 #define __chessPieces_H_
-#define PIECE_HEIGHT 12
+#define PIECE_HEIGHT 14
 #define PIECE_WIDTH 14
-char *piecesBitmap(int c);
+char * piecesBitmap(int c);
+typedef enum
+{
+    PAWN = 0,
+    ROOK = 1,
+    KNIGHT = 2,
+    BISHOP = 3,
+    QUEEN = 4,
+    KING = 5,
+    EMPTY = 6
+} typePieces;
+
 /**
  * Matriz de chars para imprimir las piezas.
 // 0: Peon.

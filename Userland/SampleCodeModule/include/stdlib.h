@@ -19,6 +19,19 @@ extern uint64_t _sGetChar();
  * define qué elemento pasar (día, hora, mes, etc).
 */
 extern uint64_t _getTime(int desc);
+/**
+ * Funcion que recibe como parametro puntero a funcion y flag para activar
+ * o desactivar la misma que se ejecuta cada vez que se realiza un tick.
+ */
+extern void _timerFunc(void(*f), int toDo);
+
+extern int _getPixelHeight();
+
+extern int _getPixelWidth();
+
+int getScreenHeight();
+
+int getScreenWidth();
 
 uint64_t getChar();
 
@@ -27,6 +40,8 @@ void putChar(char c);
 void print(char *s);
 
 void printWithColor(char *string, int color);
+
+void printInt(int num);
 
 int strlen(char *s);
 
@@ -47,5 +62,7 @@ int pow(int base, unsigned int exp);
 uint64_t hexaToInt(char * s);
 
 void numToStr(int num, char *string, int len);
+
+void *memcpy(void *destination, const void *source, uint64_t length);
 
 #endif

@@ -1,4 +1,10 @@
+/**
+ * videoDriver.c: Driver encargado del manejo de la pantalla como recurso protegido.
+*/
 #include <videoDriver.h>
+
+// para testeo
+#include <stdio.h>
 
 struct vbe_mode_info_structure
 {
@@ -57,55 +63,80 @@ void drawPixel(int x, int y, int color)
 
 void drawChar(int x, int y, char character, int fontSize, int fontColor, int bgColor)
 {
-	drawFigure(charBitmap(character),x,y,fontSize,fontColor,bgColor,CHAR_HEIGHT,CHAR_WIDTH);
-}
-
-void drawFigure(unsigned char *toDraw, int x, int y, int size, int fgColor, int bgColor, int height, int width)
-{
 	int aux_x = x;
 	int aux_y = y;
+	unsigned char *toDraw = charBitmap(character);
+	char isForeground; // Flag para definir si dibujar el fondo o no.
 
-	char isForeground; // Flag para definir si dibujar el fondo o no. 
-
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < CHAR_HEIGHT; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < CHAR_WIDTH; j++)
 		{
-			isForeground = (1 << (width - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
+			isForeground = (1 << (CHAR_WIDTH - j)) & toDraw[i]; // decalamos para ver qué dibujamos.
 
 			if (isForeground)
-				drawPixel(aux_x, aux_y, fgColor); // dibuja la parte de la figura especificada figura.
+				drawPixel(aux_x, aux_y, fontColor); // dibuja la parte de la figura especificada figura.
 			else
 				drawPixel(aux_x, aux_y, bgColor); // dibuja la parte del fondo de la figura especificado.
 
-			aux_x += size; // incrementa en x el tamaño.
+			aux_x += fontSize; // incrementa en x el tamaño.
 		}
 		aux_x = x;
-		aux_y += size; // incrementa en y el tamaño.
+		aux_y += fontSize; // incrementa en y el tamaño.
 	}
 }
-
-// ver si sirve para el ajedrez.
-void drawRectangle(unsigned int x, unsigned int y, int b, int h, int color)
+void drawFigure(char *toDraw, int color, int size, int x, int y)
 {
-	for (int i = 0; i < b; i++)
+	if (x > (screenData->width) && y > (screenData->height))
 	{
-		for (int j = 0; j < h; j++)
+		return;
+	}
+	// Guardamos el estado inicial
+	int aux_x = x;
+	int aux_y = y;
+	// recorremos toDraw
+	char c = toDraw[0];
+	for (int i = 0; c != 0 && aux_x < screenData->width && aux_y < screenData->height; c = toDraw[i++])
+	{
+		switch (c)
 		{
-			drawPixel(x + i, y + j, color);
+		case '\n': // Proxima posición en y.
+			aux_x = x;
+			aux_y += size;
+			break;
+		case '_': // No dibujo.
+			aux_x += size;
+			break;
+		case 'X': // Dibujo.
+			drawSquare(aux_x, aux_y, size, color);
+			aux_x += size;
+			break;
+		default:
+			c = 0;
+			break;
 		}
 	}
 }
 
-// idem drawRectangle.
-void drawSquare(unsigned int x, unsigned int y, int l, int color)
+void drawRectangle(unsigned int x, unsigned int y, int base, int height, int color)
 {
-	drawRectangle(x, y, l, l, color);
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < base; j++)
+		{
+			drawPixel(x + j, y + i, color);
+		}
+	}
 }
 
-void drawCursor(int x, int y, int blink)
+void drawSquare(unsigned int x, unsigned int y, int area, int color)
 {
-	blink ? drawChar(x, y, '|', 1, GREEN, BLACK) : drawChar(x, y, ' ', 1, BLACK, BLACK);
+	drawRectangle(x, y, area, area, color);
+}
+
+void drawCursor(int x, int y, int blink, int color)
+{
+	blink ? drawChar(x, y, '|', 1, color, BLACK) : drawChar(x, y, ' ', 1, BLACK, BLACK);
 }
 
 void scrollUpScreen()
@@ -127,15 +158,23 @@ void clearLine()
 	}
 }
 
+int getPixelHeight()
+{
+	return screenData->height;
+}
+
+int getPixelWidth()
+{
+	return screenData->width;
+}
+
 void clearScreen()
 {
-	int width = screenData->width;
-	int height = screenData->height;
-	for (int i = 0; i < height; i++)
+	for (int y = 0; y < screenData->height; y++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int x = 0; x < screenData->width; x++)
 		{
-			drawPixel(i, j, BLACK);
+			drawPixel(x, y, BLACK);
 		}
 	}
 }
